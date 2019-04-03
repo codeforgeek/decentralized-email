@@ -1,0 +1,5 @@
+2019/03/29-15:29:34.868373 7fb3effff700 Recovering log #136
+2019/03/29-15:29:34.868407 7fb3effff700 Level-0 table #138: started
+2019/03/29-15:29:34.911903 7fb3effff700 Level-0 table #138: 274 bytes OK
+2019/03/29-15:29:35.012361 7fb3effff700 Delete type=0 #136
+2019/03/29-15:29:35.012440 7fb3effff700 Delete type=3 #134
