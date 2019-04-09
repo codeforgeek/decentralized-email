@@ -1,8 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const redis = require('redis');
+const session = require('express-session');
+const redisStore = require('connect-redis')(session);
+const cookieParser = require('cookie-parser');
 const app = express();
+const client = redis.createClient();
 const router = express.Router();
 const db = require('./db');
+
+// session middleware
+app.use(session({
+    secret: '4hKRFhSFBWHaZT3zwDFE',
+    store: new redisStore({ host: 'localhost', port: 6379, client: client,ttl :  260}),
+    saveUninitialized: false,
+    resave: false
+}));
+
+// include cookies for session
+app.use(cookieParser("secretSign#143_!223"));
 
 // add the middleware
 app.use(bodyParser.json());
@@ -30,6 +46,12 @@ app.use(bodyParser.json());
      if(response.error) {
          return res.json({"error": true, "message": "Error adding user."});
      }
+     // set session
+     req.session.key = {
+         userId: response.data['_id'],
+         email: response.data.email,
+         publicKey: response.data.publicKey
+     };
      res.json({"error": false, "message": "User added.","hash": response.hash});
  });
 
@@ -44,6 +66,12 @@ app.use(bodyParser.json());
         return res.json({"error": true, "message": "Invalid user"});
     }
     // add session info here
+    // set session
+    req.session.key = {
+        userId: response.data.userId,
+        email: response.data.email,
+        publicKey: response.data.publicKey
+    };
     res.json({"error": false, "message": "User logged in."});
   });
 
@@ -51,15 +79,19 @@ app.use(bodyParser.json());
    * Get user contacts
    */
 
-   router.get('/user/contacts',(req,res) => {
+   router.get('/user/contacts',async (req,res) => {
         // check session and based on user id and email
         // extract the contacts
-        let data = req.body; // get the id from session
-        let response = await db.getUserContacts(data);
-        if(response.error) {
-            return res.json({"error": true, "message": "failure"});
+        if(req.session.key) {
+            let data = req.session.key; // get the id from session
+            let response = await db.getUserContacts(data);
+            if(response.error) {
+                return res.json({"error": true, "message": "failure"});
+            }
+            res.json({"error": false, "message": "success", "data": response.data});
+        } else {
+            return res.json({"error": true, "message": "Invalid session"});
         }
-        res.json({"error": false, "message": "success", "data": response.data});
    });
 
    /**
@@ -68,77 +100,138 @@ app.use(bodyParser.json());
 
    router.post('/user/contacts', async (req,res) => {
         // create a contact request
-        let data = req.body;
-        let response = await db.addUserContact(data);
-        if(response.error) {
-            return res.json({ "error": true, "message": "failure" });
+        if(req.session.key) {
+            let data = req.session.key;
+            if(req.body.contactEmail === data.email) {
+                // user trying to add himself as contact
+                return res.json({"error": true, "message": "You can't add yourself as contact"});
+            }
+            // add contact email information
+            data.contactEmail = req.body.contactEmail;
+            let response = await db.addUserContact(data);
+            if(response.error) {
+                return res.json({ "error": true, "message": "failure" });
+            }
+            res.json({ "error": false, "message": "success" });
+        } else {
+            return res.json({"error": true, "message": "Invalid session"});
         }
-        res.json({ "error": false, "message": "success" });
    });
+
+    /**
+     * Get user contacts requests
+     */
+
+    router.get('/user/contacts/request',async (req,res) => {
+        // check session and based on user id and email
+        // extract the contacts
+        if(req.session.key) {
+            let data = req.session.key; // get the id from session
+            let response = await db.getUserContactsRequest(data);
+            if(response.error) {
+                return res.json({"error": true, "message": "failure"});
+            }
+            res.json({"error": false, "message": "success", "data": response.data});
+        } else {
+            return res.json({"error": true, "message": "Invalid session"});
+        }
+    });
 
     /**
      * approve/reject the user contact request
      */
 
-    router.post('/user/contacts/action', (req,res) => {
+    router.post('/user/contacts/action', async (req,res) => {
         // get the action such as approve or reject
         // get contact email
         // get user email from the session
-        let data = req.body;
-        let response = await db.userContactAction(data);
-        if(response.error) {
-            return res.json({ "error": true, "message": "failure" });
+        if(req.session.key) {
+            let data = req.body;            
+            let response = await db.userContactAction(data);
+            if(response.error) {
+                return res.json({ "error": true, "message": "failure" });
+            }
+            res.json({ "error": false, "message": "success" });
+        } else {
+            return res.json({"error": true, "message": "Invalid session"});
         }
-        res.json({ "error": false, "message": "success" });
     });
 
     /**
      * Send email
      */
 
-    router.post('/email',(req,res) => {
+    router.post('/email',async (req,res) => {
         // get the user id from session
         // grab user credentials
         // check if the unlock key is correct
         // decrypt private key
         // create email instace in the database
-        let data = req.body
-        // add from address
-        let response = await db.sendEmail(data);
-        if(response.error) {
-            return res.json({ "error": true, "message": "failure" });
+        if(req.session.key) {
+            let data = req.session.key;
+            data.from = req.body.from;
+            data.to = req.body.to;
+            data.email = req.body.email;
+            // add from address
+            let response = await db.sendEmail(data);
+            if(response.error) {
+                return res.json({ "error": true, "message": "failure" });
+            }
+            res.json({ "error": false, "message": "success" });   
+        } else {
+            return res.json({"error": true, "message": "Invalid session"});            
         }
-        res.json({ "error": false, "message": "success" });        
     });
 
     /**
      * Get the emails of user
      */
 
-    router.get('/email', (req,res) => {
+    router.get('/email', async (req,res) => {
         // get the user id from session
         // get all emails of that user
-        let response = db.getUserEmail(req.session.email);
-        if(response.error) {
-            return res.json({ "error": true, "message": "failure", "data": response.data });
-        }
-        res.json({ "error": false, "message": "success", "data": response.data });
+        if(req.session.key) {
+            let response = await db.getUserEmail(req.session.key);
+            if(response.error) {
+                return res.json({ "error": true, "message": "failure", "data": response.data });
+            }
+            res.json({ "error": false, "message": "success", "data": response.data });
+        } else {
+            return res.json({"error": true, "message": "Invalid session"});
+        }        
     });
 
     /**
      * Open specific email
      */
 
-    router.get('/email/:id',(req,res) => {
-        let data = {
-            id: req.params.id,
-            email: req.session.email
-        };
-        let response = await db.readEmail(data);
-        if(response.error) {
-            return res.json({ "error": true, "message": "failure", "data": response.data });
+    router.get('/email/:id',async (req,res) => {
+        if(req.session.key) {
+            let data = {
+                id: req.params.id,
+                email: req.session.key.email
+            };
+            let response = await db.readEmail(data);
+            if(response.error) {
+                return res.json({ "error": true, "message": "failure", "data": response.data });
+            }
+            res.json({ "error": false, "message": "success", "data": response.data });
+        } else {
+            return res.json({"error": true, "message": "Invalid session"});
+        }        
+    });
+
+    /**
+     * Logout the user
+     */
+
+    router.get('/logout',(req,res) => {
+        if(req.session.key) {
+            req.session.destroy();    
+            res.send('ok');
+        } else {
+            res.sendStatus(404);
         }
-        res.json({ "error": false, "message": "success", "data": response.data });        
     });
 
     app.use('/api', router);

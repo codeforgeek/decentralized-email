@@ -30,7 +30,7 @@ let userContactsDb = null;
 let userEmailsDb = null;
 
 async function loadDB() {
-	//db = await orbitdb.docs('todo1');
+    console.log('loading the databases');
 	try {
         // loads all db
         if(config.user !== null && config.contacts !== null && config.emails !== null) {
@@ -91,21 +91,43 @@ async function loadDB() {
 	userEmailsDb.events.on('replicated', (address) => {
 		console.log('user emails databse replication done.');
 	});
-	
     userDb.load();
     userContactsDb.load();
     userEmailsDb.load();
 }
-loadDB();
 
-async function addUser() {
+// load the database
+loadDB();
+// async function deleteRecords() {
+//     let userData = await userDb.get('');
+//     let userContactData = await userContactsDb.get('');
+//     let userEmailData = await userEmailsDb.get('');
+//     console.log('user === \n', userData);
+//     console.log('contact === \n', userContactData);
+//     console.log('emails === \n', userEmailData);
+//     let userArray = [''];
+//     let contactArray = ['6ade1628-9f4d-42b3-b210-4ab67fe1822b'];
+//     userArray.map(async (singleUser) => {
+//         await userDb.del(singleUser);
+//     });
+
+//     contactArray.map(async (singleContact) => {
+//         await userContactsDb.del(singleContact);
+//     });  
+// }
+
+// setTimeout(() => {
+//     deleteRecords();
+// },5000)
+
+async function addUser(requestData) {
     try {
         let id = uuid();
-        let password = bcrypt.hashSync(data.password,10);
+        let password = bcrypt.hashSync(requestData.password,10);
         let addressData = addressGenerator();
         let data = {
             _id: id,
-            email: data.email,
+            email: requestData.email,
             password: password,
             publicKey: addressData.publicKey,
             privateKey: addressData.privateKey,
@@ -117,27 +139,31 @@ async function addUser() {
         console.log(userData);
         return {
             "error": false,
-            "hash": hash
+            "hash": hash,
+            "data": userData[0]
         }
     }
     catch(e) {
+        console.log(e);
         return {
             "error": true,
-            "hash": null
+            "hash": null,
+            "data": null
         }
     }
 }
 
 async function login(data) {
     try {
-        let userData = getUserByEmail(data.email);
+        let userData = await getUserByEmail(data.email);
         if(bcrypt.compareSync(data.password,userData[0].password)) {
             // correct password
             return {
                 "error": false,
                 "data": {
                     "userId": userData[0]['_id'],
-                    "email": userData[0]['email']
+                    "email": userData[0]['email'],
+                    "publicKey": userData[0]['publicKey']
                 },
                 "message": "user logged in successfully."
             }
@@ -150,6 +176,7 @@ async function login(data) {
         }
     }
     catch(e) {
+        console.log(e)
         return {
             "error": true,
             "data": null,
@@ -176,9 +203,29 @@ async function getUserContacts(data) {
     }
 }
 
+async function getUserContactsRequest(data) {
+    try {
+        let userContactRequestData = userContactsDb.query((doc) => doc.contactEmail === data.email && doc.status === 0);
+        return {
+            "error": false,
+            "data": userContactRequestData,
+            "message": "Success"
+        };
+    }
+    catch(e) {
+        return {
+            "error": true,
+            "data": null,
+            "message": "failure"
+        };
+    }
+}
+
 async function userContactAction(data) {
     try {
-        let contactData = await searchContact(data.userId, data.contactEmail);
+        let contactData = await searchContact(data.contactRequestId);
+        console.log(contactData)
+        //process.exit(0);
         let action = null;
         if(data.action === 'approve') {
             action = 1;
@@ -187,16 +234,31 @@ async function userContactAction(data) {
             action = 2;
         }
         let updateData = {
-            _id: contactData['_id'],
-            userId: data.userId,
-            contactEmail: data.contactEmail,
-            contactId: contactData.contactId,
-            contactPubkey: contactData.contactPubkey,
+            _id: contactData[0]._id,
+            userId: contactData[0].userId,
+            contactEmail: contactData[0].contactEmail,
+            contactId: contactData[0].contactId,
+            contactPubkey: contactData[0].contactPubkey,
             status: action,
             time: Date.now()
         }
         let hash = await userContactsDb.put(updateData);
         console.log(hash);
+        // if approved
+        // add the contact in current user list too
+        if(status === 1) {
+            let newContactData = await getUserById(contactData[0].userId);
+            let userContactData = {
+                _id: uuid(),
+                userId: contactData[0].contactId,
+                contactEmail: newContactData[0].email,
+                contactId: newContactData[0]['_id'],
+                contactPubkey: newContactData[0].publicKey,
+                status: 1,
+                time: Date.now()
+            }
+            let newHash = await userContactsDb.put(userContactData);
+        }
         return {
             "error": false,
             "hash": hash,
@@ -222,21 +284,26 @@ async function getEmails(email) {
     return data;
 }
 
-async function searchContact(userId, email) {
-    let data = userContactsDb.query((doc) => doc.userId === userId && doc.contactEmail === email);
+async function searchContact(contactId) {
+    let data = userContactsDb.query((doc) => doc._id === contactId);
+    return data;
+}
+
+async function getUserById(id) {
+    let data = userDb.query((doc) => doc._id === id);
     return data;
 }
 
 async function addUserContact(data) {
     try {
         let id = uuid();
-        let fetchContactData = getUserByEmail(data.contactEmail);
+        let fetchContactData = await getUserByEmail(data.contactEmail);
         let contactData = {
             _id: id,
             userId: data.userId,
             contactEmail: data.contactEmail,
-            contactId: fetchContactData.userId,
-            contactPubkey: fetchContactData.publicKey,
+            contactId: fetchContactData[0]['_id'],
+            contactPubkey: fetchContactData[0].publicKey,
             status: 0,
             time: Date.now()
         }
@@ -320,7 +387,7 @@ async function readEmail(data) {
         let senderData = await getUserByEmail(emailData[0].from);
         let decryptEmail = verifyMessage({
             email: emailData[0].email,
-            signature: emailData[0].email
+            signature: emailData[0].signature
         },{
             senderPublicKey: senderData[0].publicKey,
             privateKey: userData[0].privateKey
@@ -340,19 +407,6 @@ async function readEmail(data) {
     }
 }
 
-/**
- * Check whether the from address is in your contacts, if not reject it right away
- * Otherwise decrypt the email using reciepant private key and sender's public key
- */
-
-async function decodeMail() {        
-    let currentUserData = await getUserByEmail('shahid@hashmailer.com');
-    let ashData = await getUserByEmail('ash@hashmailer.com');
-    let emailData = await getEmails('ash@hashmailer.com');
-    let decryptEmail = verifyMessage({email: emailData[0].email, signature: emailData[0].signature}, {senderPublicKey: currentUserData[0].publicKey, privateKey: ashData[0].privateKey});    
-    console.log(decryptEmail);
-}
-
 module.exports = {
     addUser: addUser,
     login: login,
@@ -361,5 +415,6 @@ module.exports = {
     userContactAction: userContactAction,
     sendEmail: sendEmail,
     getUserEmail: getUserEmail,
-    readEmail:readEmail,
+    readEmail:readEmail,    
+    getUserContactsRequest: getUserContactsRequest,
 }
