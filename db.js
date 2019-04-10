@@ -246,7 +246,7 @@ async function userContactAction(data) {
         console.log(hash);
         // if approved
         // add the contact in current user list too
-        if(status === 1) {
+        if(action === 1) {
             let newContactData = await getUserById(contactData[0].userId);
             let userContactData = {
                 _id: uuid(),
