@@ -24,6 +24,20 @@ const ipfsOptions = {
 const ipfs = new IPFS(ipfsOptions);
 const orbitdb = new OrbitDB(ipfs);
 
+// ipfs.swarm.connect('/ip4/49.32.207.32/tcp/4001/ipfs/QmNtjSfnZAQ9PhEMGqfWTkSdhU7CGbSfXvyfGMipypm4UV', (err) => {
+//     if(err) {
+//         return console.log(err);
+//     }    
+//     console.log('connected');
+// })
+
+// ipfs.swarm.peers((err, info) => {
+//     if(err) {
+//         return console.log(err);
+//     }
+//     //console.log(info);
+// });
+
 // load all dbs
 let userDb = null;
 let userContactsDb = null;
@@ -205,10 +219,18 @@ async function getUserContacts(data) {
 
 async function getUserContactsRequest(data) {
     try {
+        let contactRequestData = [];
         let userContactRequestData = userContactsDb.query((doc) => doc.contactEmail === data.email && doc.status === 0);
+        if(userContactRequestData.length > 0) {
+            userContactRequestData.map(async (singleContact) => {
+                let userData = await getUserById(singleContact.userId);
+                singleContact.senderData = userData[0];
+                contactRequestData.push(singleContact);
+            });
+        }
         return {
             "error": false,
-            "data": userContactRequestData,
+            "data": contactRequestData,
             "message": "Success"
         };
     }
