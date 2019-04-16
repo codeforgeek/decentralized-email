@@ -86,7 +86,7 @@ $(function () {
     $('#Compose').click(function (e) {
         e.preventDefault();
         $(emails).html(
-            "<label>Receipent</label>" +
+            "<label>To</label>" +
             "<input type=\"email\" id=\"to\" placeholder=\"To\"> " + "<br />" +
             "<label>Subject</label>" +
             "<input type=\"text\" id=\"subject\" placeholder=\"Subject\"> " + "<br />" +
