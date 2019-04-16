@@ -201,7 +201,7 @@ router.post('/email', async (req, res) => {
     // create email instace in the database
     if (req.session.key) {
         let data = req.session.key;
-        data.from = req.body.from;
+        data.from = req.session.key.email;
         data.to = req.body.to;
         data.subject = req.body.subject || '(No Subject)';
         data.email = req.body.email;
