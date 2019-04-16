@@ -200,7 +200,7 @@ router.post('/email', async (req, res) => {
     // decrypt private key
     // create email instace in the database
     if (req.session.key) {
-        let data = req.session.key;
+        let data = {};        
         data.from = req.session.key.email;
         data.to = req.body.to;
         data.subject = req.body.subject || '(No Subject)';
