@@ -203,6 +203,7 @@ router.post('/email', async (req, res) => {
         let data = req.session.key;
         data.from = req.body.from;
         data.to = req.body.to;
+        data.subject = req.body.subject || '(No Subject)';
         data.email = req.body.email;
         // add from address
         let response = await db.sendEmail(data);
@@ -247,7 +248,7 @@ router.get('/email/:id', async (req, res) => {
         if (response.error) {
             return res.json({ "error": true, "message": "failure", "data": response.data });
         }
-        res.json({ "error": false, "message": "success", "data": response.data, "email": req.session.key.email });
+        res.json({ "error": false, "message": "success", "data": response.data });
     } else {
         return res.json({ "error": true, "message": "Invalid session" });
     }

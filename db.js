@@ -224,7 +224,10 @@ async function getUserContactsRequest(data) {
         if(userContactRequestData.length > 0) {
             userContactRequestData.map(async (singleContact) => {
                 let userData = await getUserById(singleContact.userId);
-                singleContact.senderData = userData[0];
+                singleContact.senderData = {
+                    email: userData[0].email,
+                    publicKey: userData[0].publicKey
+                };
                 contactRequestData.push(singleContact);
             });
         }
@@ -360,6 +363,7 @@ async function sendEmail(data) {
             _id: id,
             from: data.from,
             to: data.to,
+            subject: data.subject || '(No Subject)',
             email: signatureData.data,
             signature: signatureData.nonce,
             readStatus: false,
@@ -416,7 +420,11 @@ async function readEmail(data) {
             });
         return {
             "error": false,
-            "data": decryptEmail,
+            "data": {
+                from: emailData[0].from,
+                subject: emailData[0].subject || '(No Subject)',
+                email: decryptEmail,
+            },
             "message": "Success"
         };
     }
