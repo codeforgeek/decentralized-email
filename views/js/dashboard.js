@@ -61,7 +61,7 @@ $(function () {
             success: function (data) {
                 $(emails).html('');
                 $.each(data.data, function (i, contact) {
-                    var contactEmail = contact.contactEmail.split("@");
+                    var contactEmail = contact.senderData.email.split("@");
                     $(emails).append('<li>Name:' + contactEmail[0] + '<button onclick="approve(\'' + contact._id + '\')">Approve</button> &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="reject(\'' + contact._id + '\')">Reject</button>' + '</li>')
                 })
             },
@@ -86,8 +86,6 @@ $(function () {
     $('#Compose').click(function (e) {
         e.preventDefault();
         $(emails).html(
-            "<label>Sender</label>" +
-            "<input type=\"email\" id=\"from\" placeholder=\"From\"> " + "<br />" +
             "<label>Receipent</label>" +
             "<input type=\"email\" id=\"to\" placeholder=\"To\"> " + "<br />" +
             "<label>Subject</label>" +
@@ -102,12 +100,10 @@ $(function () {
 
 // send Email
 function sendmail() {
-    var $from = $('#from');
     var $to = $('#to');
     var $message = $('#message');
     var $subject = $('#subject');
     var emailData = {
-        from: $from.val(),
         to: $to.val(),
         subject: $subject.val(),
         email: $message.val()
