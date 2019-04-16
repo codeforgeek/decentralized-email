@@ -1,7 +1,7 @@
 $(function () {
-var month = [
-    'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'
-]
+    var month = [
+        'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
+    ]
 
     // list all mails
     var $emails = ('#emails')
@@ -17,11 +17,12 @@ var month = [
                     $(emails).html('');
                     $.each(data.data, function (i, email) {
                         var sender = email.from.split("@");
+                        console.log(data)
                         // var time = new Date(email.time).toUTCString()
                         var dt = new Date(email.time);
-                        var time = dt.getDate()+" "+ month[dt.getMonth()] + " " +dt.getHours() + ":" + dt.getMinutes();
+                        var time = dt.getDate() + " " + month[dt.getMonth()] + " " + dt.getHours() + ":" + dt.getMinutes();
                         var subject = (email.subject ? email.subject : "(NO SUBJECT)");
-                        $(emails).append('<li style = \" font-weight: bold;list-style-type:none;padding:8px 16px;\" id="emailid" onclick="readMail(\'' + email._id + '\')">' + "From: " + sender[0] + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + "Subject: " + subject + "<span class = \"date;\">" + time + '</li>')
+                        $(emails).append('<li style = \" font-weight: bold;list-style-type:none;padding:8px 16px;\" id="emailid" onclick="readMail(\'' + email._id + '\')">' + "From: " + sender[0] + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + "Subject: " + subject + "<span class = \"date\">" + time + '</li>')
                     })
                 }
             },
@@ -205,11 +206,9 @@ function readMail(id) {
         type: 'GET',
         url: '../api/email/' + id + '',
         success: function (data) {
-            var subject = (data.subject ? data.subject : "(NO SUBJECT)");
-            // if(data.subject)
-            $(emails).html("<b>Sender:</b><h4>" + data.email + "</h4><br /><b>Subject:</b><p>" + subject + "</p><br /><b>Body:</b><p>" + data.data + "</p>");
-            // else 
-            // $(emails).html("<b>Sender:</b><h4>" + data.email + "</h4><br /><b>Subject:</b><p>" + "(NO SUBJECT)" + "</p><br /><b>Body:</b><p>" + data.data + "</p>");
+            console.log(data)
+            var subject = (data.data.subject ? data.data.subject : "(NO SUBJECT)");
+            $(emails).html("<b>Sender:</b><h4>" + data.data.from + "</h4><br /><b>Subject:</b><p>" + subject + "</p><br /><b>Body:</b><p>" + data.data.email + "</p>");
         },
         error: function () {
             alert("error");
