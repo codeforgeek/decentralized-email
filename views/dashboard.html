@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Dashboard
+    </title>
+</head>
+
+<body>
+    <div class="container-fluid">
+
+        <div class="row border border-secondary border-top-0 border-right-0 border-left-0">
+            <div class="col-6">
+                    <p class="logo pt-3">Decentralized
+                            Email
+                        </p>
+            </div>
+            <div class="col-6 text-align-right pt-3">
+                <a href="/logout"> Logout</a>
+            </div>
+        </div>
+
+        <div class="row container-box">
+
+            <div class="col-2 left-container">
+                <!-- Left Container -->
+                <br />
+                <li id="Compose">Compose</li>
+                <li id="Inbox">Inbox</li>
+                <li id="Request">Request</li>
+                <li id="Contacts">My Contacts</li>
+                <li id="ContactRequests">All Requests</li>
+            </div>
+
+            <div class="col-10 right-container" id="dataContainer">
+                <!-- Right Container -->
+                <br /><br /><br />
+                <ul id="emails">
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- for jquery validation -->
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <!-- external sheets -->
+    <script src="/js/home.js"></script>
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/register.js"></script>
+    <script src="/js/moment.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="/css/home.css"> -->
+    <link rel="stylesheet" type="text/css" href="/css/dashboard.css">
+</body>
+
+</html>

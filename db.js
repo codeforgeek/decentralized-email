@@ -8,16 +8,16 @@ const signMessage = require('./utils/sign');
 const verifyMessage = require('./utils/verify');
 
 const ipfsOptions = {
-  EXPERIMENTAL: {
-    pubsub: true
-  },
-  relay: {
-      enabled: true, hop: {
-          enabled: true, active: true
+    EXPERIMENTAL: {
+        pubsub: true
+    },
+    relay: {
+        enabled: true, hop: {
+            enabled: true, active: true
         }
     },
-  host: 'localhost',
-  port: '5001'
+    host: 'localhost',
+    port: '5001'
 };
 
 // Create IPFS instance
@@ -31,66 +31,66 @@ let userEmailsDb = null;
 
 async function loadDB() {
     console.log('loading the databases');
-	try {
+    try {
         // loads all db
-        if(config.user !== null && config.contacts !== null && config.emails !== null) {
+        if (config.user !== null && config.contacts !== null && config.emails !== null) {
             userDb = await orbitdb.open(config.user);
             userContactsDb = await orbitdb.open(config.contacts);
             userEmailsDb = await orbitdb.open(config.emails);
         } else {
             // create dbs
-			userDb = await orbitdb.create('email.user','docstore',{
-				write: ['*']
+            userDb = await orbitdb.create('email.user', 'docstore', {
+                write: ['*']
             });
 
-            userContactsDb = await orbitdb.create('email.user.contacts','docstore',{
-				write: ['*']
+            userContactsDb = await orbitdb.create('email.user.contacts', 'docstore', {
+                write: ['*']
             });
 
-            userEmailsDb = await orbitdb.create('email.user.data','docstore',{
-				write: ['*']
+            userEmailsDb = await orbitdb.create('email.user.data', 'docstore', {
+                write: ['*']
             });
-		}
-	}	
-	catch(e) {
-		console.log(e);		
-	}
-	// load the local store of the data
-	userDb.events.on('ready', () => {
-		console.log('user database is ready.')
-	});
-
-	userDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-		console.log('user database replication is in progress');
-	});
-
-	userDb.events.on('replicated', (address) => {
-		console.log('user database replication done.');
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
+    // load the local store of the data
+    userDb.events.on('ready', () => {
+        console.log('user database is ready.')
     });
-    
+
+    userDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+        console.log('user database replication is in progress');
+    });
+
+    userDb.events.on('replicated', (address) => {
+        console.log('user database replication done.');
+    });
+
     userContactsDb.events.on('ready', () => {
-		console.log('user contacts database is ready.')
-	});
-
-	userContactsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-		console.log('user contacts database replication is in progress');
-	});
-
-	userContactsDb.events.on('replicated', (address) => {
-		console.log('user contacts replication done.');
+        console.log('user contacts database is ready.')
     });
-    
+
+    userContactsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+        console.log('user contacts database replication is in progress');
+    });
+
+    userContactsDb.events.on('replicated', (address) => {
+        console.log('user contacts replication done.');
+    });
+
     userEmailsDb.events.on('ready', () => {
-		console.log('user emails database is ready.')
-	});
+        console.log('user emails database is ready.')
+    });
 
-	userEmailsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-		console.log('user emails database replication is in progress');
-	});
+    userEmailsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+        console.log('user emails database replication is in progress');
+    });
 
-	userEmailsDb.events.on('replicated', (address) => {
-		console.log('user emails databse replication done.');
-	});
+    userEmailsDb.events.on('replicated', (address) => {
+        console.log('user emails databse replication done.');
+    });
     userDb.load();
     userContactsDb.load();
     userEmailsDb.load();
@@ -123,7 +123,7 @@ loadDB();
 async function addUser(requestData) {
     try {
         let id = uuid();
-        let password = bcrypt.hashSync(requestData.password,10);
+        let password = bcrypt.hashSync(requestData.password, 10);
         let addressData = addressGenerator();
         let data = {
             _id: id,
@@ -143,7 +143,7 @@ async function addUser(requestData) {
             "data": userData[0]
         }
     }
-    catch(e) {
+    catch (e) {
         console.log(e);
         return {
             "error": true,
@@ -156,7 +156,7 @@ async function addUser(requestData) {
 async function login(data) {
     try {
         let userData = await getUserByEmail(data.email);
-        if(bcrypt.compareSync(data.password,userData[0].password)) {
+        if (bcrypt.compareSync(data.password, userData[0].password)) {
             // correct password
             return {
                 "error": false,
@@ -175,7 +175,7 @@ async function login(data) {
             }
         }
     }
-    catch(e) {
+    catch (e) {
         console.log(e)
         return {
             "error": true,
@@ -194,7 +194,7 @@ async function getUserContacts(data) {
             "message": "Success"
         };
     }
-    catch(e) {
+    catch (e) {
         return {
             "error": true,
             "data": null,
@@ -212,7 +212,7 @@ async function getUserContactsRequest(data) {
             "message": "Success"
         };
     }
-    catch(e) {
+    catch (e) {
         return {
             "error": true,
             "data": null,
@@ -227,10 +227,10 @@ async function userContactAction(data) {
         console.log(contactData)
         //process.exit(0);
         let action = null;
-        if(data.action === 'approve') {
+        if (data.action === 'approve') {
             action = 1;
         }
-        if(data.action === 'reject') {
+        if (data.action === 'reject') {
             action = 2;
         }
         let updateData = {
@@ -246,7 +246,7 @@ async function userContactAction(data) {
         console.log(hash);
         // if approved
         // add the contact in current user list too
-        if(action === 1) {
+        if (action === 1) {
             let newContactData = await getUserById(contactData[0].userId);
             let userContactData = {
                 _id: uuid(),
@@ -265,7 +265,7 @@ async function userContactAction(data) {
             "message": "Success"
         };
     }
-    catch(e) {
+    catch (e) {
         return {
             "error": true,
             "hash": null,
@@ -317,7 +317,7 @@ async function addUserContact(data) {
             "message": "Success"
         };
     }
-    catch(e) {
+    catch (e) {
         return {
             "error": true,
             "hash": null,
@@ -333,12 +333,12 @@ async function sendEmail(data) {
         let senderData = await getUserByEmail(data.from);
         let reciepentData = await getUserByEmail(data.to);
         let email = data.email;
-        let signatureData = signMessage(email, {privateKey: senderData[0].privateKey, publicKey: reciepentData[0].publicKey});
+        let signatureData = signMessage(email, { privateKey: senderData[0].privateKey, publicKey: reciepentData[0].publicKey });
         let emailData = {
             _id: id,
             from: data.from,
             to: data.to,
-            email: signatureData.data,        
+            email: signatureData.data,
             signature: signatureData.nonce,
             readStatus: false,
             time: Date.now()
@@ -352,8 +352,8 @@ async function sendEmail(data) {
             "hash": hash,
             "message": "Success"
         };
-    }   
-    catch(e) {
+    }
+    catch (e) {
         return {
             "error": true,
             "hash": null,
@@ -371,7 +371,7 @@ async function getUserEmail(data) {
             "message": "Success"
         };
     }
-    catch(e) {
+    catch (e) {
         return {
             "error": true,
             "data": null,
@@ -388,17 +388,17 @@ async function readEmail(data) {
         let decryptEmail = verifyMessage({
             email: emailData[0].email,
             signature: emailData[0].signature
-        },{
-            senderPublicKey: senderData[0].publicKey,
-            privateKey: userData[0].privateKey
-        });
+        }, {
+                senderPublicKey: senderData[0].publicKey,
+                privateKey: userData[0].privateKey
+            });
         return {
             "error": false,
             "data": decryptEmail,
             "message": "Success"
         };
     }
-    catch(e) {
+    catch (e) {
         return {
             "error": true,
             "data": null,
@@ -406,6 +406,35 @@ async function readEmail(data) {
         };
     }
 }
+
+async function checkUserEmail(data) {
+    try {
+        let userData = await getUserByEmail(data.email);
+        if (userData.length == 0) {
+            return {
+                "error": false,
+                "data": null,
+                "message": "email does not exists."
+            } 
+        } else {
+            // email present
+            return {
+                "error": true,
+                "data": null,
+                "message": "email already exists."
+            }
+        }
+    }
+    catch (e) {
+        console.log(e)
+        return {
+            "error": true,
+            "data": null,
+            "message": "error occurred during email presence check."
+        }
+    }
+}
+
 
 module.exports = {
     addUser: addUser,
@@ -415,6 +444,7 @@ module.exports = {
     userContactAction: userContactAction,
     sendEmail: sendEmail,
     getUserEmail: getUserEmail,
-    readEmail:readEmail,    
+    readEmail: readEmail,
     getUserContactsRequest: getUserContactsRequest,
+    checkUserEmail: checkUserEmail,
 }

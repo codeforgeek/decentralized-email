@@ -1,0 +1,32 @@
+.left-container {
+    /* border:1px solid black; */
+}
+
+.left-container li:hover {
+    background-color: rgb(196, 199, 212);
+    border-radius: 25px;
+}
+
+.left-container li {
+    font-weight: bolder;
+    list-style-type: none;
+    padding: 8px 16px;
+}
+
+.right-container {
+    /* border: 1px solid black; */
+}
+
+.container-box {
+    height: 80vh;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.date {
+    font-size: .8em;
+    float:right;
+    font-weight: normal;
+}
