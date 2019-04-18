@@ -5,6 +5,7 @@
     <title>
         Dashboard
     </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
@@ -12,9 +13,12 @@
 
         <div class="row header">
             <div class="col-6">
-                    <p class="logo pt-3">Decentralized
-                            Email
-                        </p>
+                <p class="logo pt-3">Decentralized
+                    Email
+                </p>
+                <span class="icon" onclick="showMobileView()">
+                    <i class="fa fa-bars"></i>
+                </span>
             </div>
             <div class="col-6 text-align-right pt-3">
                 <a href="/logout"> Logout</a>
@@ -23,9 +27,10 @@
 
         <div class="row container-box">
 
-            <div class="col-2 left-container">
+            <div class="col-2 left-container overlay" id="abc">
                 <!-- Left Container -->
                 <br />
+                <li id="Close">Close</li>
                 <li id="Compose">Compose</li>
                 <li id="Inbox">Inbox</li>
                 <li id="Request">Request</li>
@@ -36,6 +41,9 @@
             <div class="col-10 right-container" id="dataContainer">
                 <!-- Right Container -->
                 <br />
+                <!-- <button class="icon" onclick="showMobileView()">
+                    <i class="fa fa-bars"></i>
+                </button> -->
                 <ul id="emails">
 
                 </ul>
@@ -55,12 +63,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- external sheets -->
     <script src="/js/home.js"></script>
     <script src="/js/dashboard.js"></script>
     <script src="/js/register.js"></script>
     <script src="/js/moment.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
     <!-- <link rel="stylesheet" type="text/css" href="/css/home.css"> -->
     <link rel="stylesheet" type="text/css" href="/css/dashboard.css">
 </body>

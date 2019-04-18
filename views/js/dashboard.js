@@ -1,10 +1,16 @@
 $(function () {
+
+    // $('.left-container').css("display", "none");
+    // $('.left-container-mobile').css("display", "none");
+
+
+
+    // $(emails).load('dashboard.html#');
     var month = [
         'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
     ]
 
     // list all mails
-    var $emails = ('#emails')
     $('#Inbox').click(function (e) {
         e.preventDefault();
         $.ajax({
@@ -77,9 +83,9 @@ $(function () {
     $('#Request').click(function (e) {
         e.preventDefault();
         $(emails).html(
-            "<label class=\"width-100\">Contact Email</label>" +
+            "<label class=\"width-100\">Contact Email</label><br />" +
             "<input type=\"email\" id=\"contactEmail\" placeholder=\"Email\"> <br />" +
-            "<button class=\"btn btn-primary\" style = \"margin-left: 40%\" onclick = \"request()\">Send</button>"
+            "<button class=\"btn btn-primary request-btn\" style = \"margin-left: 20%\" onclick = \"request()\">Send</button>"
         )
     });
 
@@ -88,15 +94,28 @@ $(function () {
         e.preventDefault();
         $(emails).html(
             "<label class = \"width-100\">To</label>" +
-            "<input class = \"width-380\" type=\"email\" id=\"to\" placeholder=\"To\"> <br />" +
+            "<input style = \"width:100%\" type=\"email\" id=\"to\" placeholder=\"To\"> <br />" +
             "<label class = \"width-100\">Subject</label>" +
-            "<input class = \"width-380\" type=\"text\" id=\"subject\" placeholder=\"Subject\"> <br />" +
+            "<input style = \"width:100%\" type=\"text\" id=\"subject\" placeholder=\"Subject\"> <br />" +
             "<label class = \"width-100\">Message</label>" +
-            "<textarea name=\"message\" rows=\"5\" cols=\"40\" id=\"message\" placeholder=\"Enter message\"></textarea><br /><br />" +
+            "<textarea name=\"message\" style = \"width:100%\" id=\"message\" placeholder=\"Enter message\"></textarea><br /><br />" +
             "<button class=\"btn btn-primary center-block\" onclick=\"sendmail()\" id=\"sendEmail\">Send</button>"
         )
 
     });
+
+    $('.container-box').click(function (e) {
+        if ($('.left-container').css('display') == 'block') {
+            showMobileView();
+        } else {
+
+        }
+    })
+
+    $('#Close').click(function (e) {
+        showMobileView();
+    })
+
 })
 
 // send Email
@@ -211,4 +230,22 @@ function readMail(id) {
             alert("error");
         }
     })
+}
+
+
+// responsive
+
+function showMobileView() {
+    if ($('.left-container').css('display') == 'block') {
+        $('.left-container').css("display", "none");
+        $('.left-container').removeClass("col-2");
+        $('.left-container').removeClass("col-4");
+        $('.right-container').addClass("col-12");
+        $('.right-container').removeClass("col-10");
+    } else {
+        $('.left-container').css("display", "block");
+        $('.left-container').addClass("col-4");
+        $('.right-container').addClass("col-8");
+        $('.right-container').removeClass("col-12");
+    }
 }

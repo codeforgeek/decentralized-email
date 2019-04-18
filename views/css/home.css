@@ -60,3 +60,9 @@ a:hover {
     height: 80vh;
     background-image: linear-gradient(-90deg, #80F4ED, white);
 }
+
+@media only screen and (max-width: 600px) {
+    .logo {
+        display: none;
+    }
+}

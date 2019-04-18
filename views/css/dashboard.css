@@ -57,10 +57,13 @@
     text-overflow: ellipsis;
 }
 
-/* #emails {
-    display: grid;
-    grid-template-columns: 1fr ;
-} */
+#emails {
+  
+}
+
+ul {
+    padding-inline-start: 0px;
+}
 
 .inbox-list {
     display: grid;
@@ -82,10 +85,68 @@ a:hover {
     color: white !important;
     text-shadow: 0px 1px whitesmoke;
     font-weight: bolder;
-    text-decoration: none;  
+    text-decoration: none;
 }
 
-a{
+a {
     text-decoration: none;
     color: wheat;
+}
+
+/* media Query */
+
+/* @media only screen and (max-width: 600px) {
+    body {
+      background-color: lightblue;
+    }
+  } */
+
+/* code under testing */
+
+.overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f2f2f2;
+    /* z-index: 2; */
+    cursor: pointer;
+    z-index: 2;
+}
+
+.request-btn{
+margin-left: 20%;
+}
+
+@media only screen and (max-width: 600px) {
+    .left-container {
+        display: none;
+    }
+    .icon {
+        display: block !important;
+    }
+    .logo {
+        display: none;
+    }
+    .inbox-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        font-weight: bold;
+        list-style-type: none;
+        /* padding: 8px 16px; */
+    }
+    .request-btn{
+        margin-left: 25%;
+        }
+}
+
+.icon {
+    color: black;
+    font-weight: bold;
+    display: none;
+    padding-top: 10px;
 }
