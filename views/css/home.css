@@ -66,3 +66,9 @@ a:hover {
         display: none;
     }
 }
+
+@media screen and (max-width: 500px), screen and (max-height: 500px) {
+    .jumbotron-container, #learn-more {
+        height: 100vh;
+    }
+}
