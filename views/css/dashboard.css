@@ -57,9 +57,6 @@
     text-overflow: ellipsis;
 }
 
-#emails {
-  
-}
 
 ul {
     padding-inline-start: 0px;
@@ -95,7 +92,7 @@ a {
 
 /* media Query */
 
-/* @media only screen and (max-width: 600px) {
+/* @media only screen and (max-width: 823px) {
     body {
       background-color: lightblue;
     }
@@ -122,7 +119,7 @@ a {
 margin-left: 20%;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 823px) {
     .left-container {
         display: none;
     }

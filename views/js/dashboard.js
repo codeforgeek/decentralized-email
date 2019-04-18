@@ -105,16 +105,29 @@ $(function () {
     });
 
     $('.container-box').click(function (e) {
+        if ($(window).width() < 823) {
         if ($('.left-container').css('display') == 'block') {
             showMobileView();
         } else {
 
         }
+    }
     })
 
     $('#Close').click(function (e) {
         showMobileView();
     })
+
+    if ($(window).width() < 823) {
+        // change functionality for smaller screens
+    } else {
+        $('#Close').css("display", "none");
+        $('.left-container').css("display", "block");
+        $('.left-container').addClass("col-2");
+        $('.left-container').removeClass("overlay");
+        $('.right-container').addClass("col-10");
+        $('.right-container').removeClass("col-12");
+    }
 
 })
 
