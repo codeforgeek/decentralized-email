@@ -2,7 +2,7 @@ const IPFS = require('ipfs-api');
 const OrbitDB = require('orbit-db');
 const uuid = require('uuid/v4');
 const bcrypt = require('bcrypt');
-const config = require('./config');
+const fs = require('fs');
 const addressGenerator = require('./utils/genkey');
 const signMessage = require('./utils/sign');
 const verifyMessage = require('./utils/verify');
@@ -39,6 +39,7 @@ const orbitdb = new OrbitDB(ipfs);
 // });
 
 // load all dbs
+let filePath = './dbaddress.js';
 let userDb = null;
 let userContactsDb = null;
 let userEmailsDb = null;
@@ -46,93 +47,91 @@ let userEmailsDb = null;
 async function loadDB() {
     console.log('loading the databases');
     try {
-        // loads all db
-        if (config.user !== null && config.contacts !== null && config.emails !== null) {
-            userDb = await orbitdb.open(config.user);
-            userContactsDb = await orbitdb.open(config.contacts);
-            userEmailsDb = await orbitdb.open(config.emails);
-        } else {
-            // create dbs
-            userDb = await orbitdb.create('email.user', 'docstore', {
-                write: ['*']
+        //loads all db
+        fs.access(filePath, fs.F_OK, async (err) => {
+            if(err) {
+                // file does not exists
+                // create databases and create file
+                console.log('Databases does not exists, this is a genesis peer\n');
+                console.log('Creating databases and path files\n');
+                // create dbs
+                userDb = await orbitdb.create('email.user', 'docstore', {
+                    write: ['*']
+                });
+
+                userContactsDb = await orbitdb.create('email.user.contacts', 'docstore', {
+                    write: ['*']
+                });
+
+                userEmailsDb = await orbitdb.create('email.user.data', 'docstore', {
+                    write: ['*']
+                });
+                let fileContents = {
+                    "user": userDb.address.toString(),
+                    "contacts": userContactsDb.address.toString(),
+                    "emails": userEmailsDb.address.toString()
+                }
+                // write the db file
+                fs.writeFileSync(filePath, JSON.stringify(fileContents));
+                console.log('database peer file created, loading them in memory');
+            } else {
+                // file exists, load the databases
+                let fileData = fs.readFileSync(filePath,'utf-8');
+                let config = JSON.parse(fileData);
+                console.log('Databases exists, loading them in memory\n');
+                userDb = await orbitdb.open(config.user);
+                userContactsDb = await orbitdb.open(config.contacts);
+                userEmailsDb = await orbitdb.open(config.emails);
+            }
+
+            // load the local store of the data
+            userDb.events.on('ready', () => {
+                console.log('user database is ready.')
             });
 
-            userContactsDb = await orbitdb.create('email.user.contacts', 'docstore', {
-                write: ['*']
+            userDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+                console.log('user database replication is in progress');
             });
 
-            userEmailsDb = await orbitdb.create('email.user.data', 'docstore', {
-                write: ['*']
+            userDb.events.on('replicated', (address) => {
+                console.log('user database replication done.');
             });
-        }
+
+            userContactsDb.events.on('ready', () => {
+                console.log('user contacts database is ready.')
+            });
+
+            userContactsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+                console.log('user contacts database replication is in progress');
+            });
+
+            userContactsDb.events.on('replicated', (address) => {
+                console.log('user contacts replication done.');
+            });
+
+            userEmailsDb.events.on('ready', () => {
+                console.log('user emails database is ready.')
+            });
+
+            userEmailsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
+                console.log('user emails database replication is in progress');
+            });
+
+            userEmailsDb.events.on('replicated', (address) => {
+                console.log('user emails databse replication done.');
+            });
+            userDb.load();
+            userContactsDb.load();
+            userEmailsDb.load();
+        });
     }
     catch (e) {
         console.log(e);
     }
-    // load the local store of the data
-    userDb.events.on('ready', () => {
-        console.log('user database is ready.')
-    });
-
-    userDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-        console.log('user database replication is in progress');
-    });
-
-    userDb.events.on('replicated', (address) => {
-        console.log('user database replication done.');
-    });
-
-    userContactsDb.events.on('ready', () => {
-        console.log('user contacts database is ready.')
-    });
-
-    userContactsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-        console.log('user contacts database replication is in progress');
-    });
-
-    userContactsDb.events.on('replicated', (address) => {
-        console.log('user contacts replication done.');
-    });
-
-    userEmailsDb.events.on('ready', () => {
-        console.log('user emails database is ready.')
-    });
-
-    userEmailsDb.events.on('replicate.progress', (address, hash, entry, progress, have) => {
-        console.log('user emails database replication is in progress');
-    });
-
-    userEmailsDb.events.on('replicated', (address) => {
-        console.log('user emails databse replication done.');
-    });
-    userDb.load();
-    userContactsDb.load();
-    userEmailsDb.load();
 }
 
 // load the database
 loadDB();
-// async function deleteRecords() {
-//     let userData = await userDb.get('');
-//     let userContactData = await userContactsDb.get('');
-//     let userEmailData = await userEmailsDb.get('');
-//     console.log('user === \n', userData);
-//     console.log('contact === \n', userContactData);
-//     console.log('emails === \n', userEmailData);
-//     let userArray = [''];
-//     let contactArray = ['6ade1628-9f4d-42b3-b210-4ab67fe1822b'];
-//     userArray.map(async (singleUser) => {
-//         await userDb.del(singleUser);
-//     });
-
-//     contactArray.map(async (singleContact) => {
-//         await userContactsDb.del(singleContact);
-//     });  
-// }
-
-// setTimeout(() => {
-//     deleteRecords();
-// },5000)
 
 async function addUser(requestData) {
     try {
