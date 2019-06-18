@@ -225,7 +225,7 @@ router.post("/email", async (req, res) => {
     // add from address
     let response = await db.sendEmail(data);
     if (response.error) {
-      return res.json({ error: true, message: "failure" });
+      return res.json({ error: true, message: response.message || 'Failure' });
     }
     res.json({ error: false, message: "success" });
   } else {
@@ -242,6 +242,25 @@ router.get("/email", async (req, res) => {
   // get all emails of that user
   if (req.session.key) {
     let response = await db.getUserEmail(req.session.key);
+    if (response.error) {
+      return res.json({ error: true, message: "failure", data: response.data });
+    }
+    res.json({ error: false, message: "success", data: response.data });
+  } else {
+    return res.json({ error: true, message: "Invalid session" });
+  }
+});
+
+
+/**
+ * Get the emails sent by the user
+ */
+
+router.get("/email/sent", async (req, res) => {
+  // get the user id from session
+  // get all emails of that user
+  if (req.session.key) {
+    let response = await db.getUserSentEmail(req.session.key);
     if (response.error) {
       return res.json({ error: true, message: "failure", data: response.data });
     }
