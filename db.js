@@ -485,6 +485,7 @@ async function readEmail(data) {
             "error": false,
             "data": {
                 from: emailData[0].from,
+                to: emailData[0].to,
                 subject: emailData[0].subject || '(No Subject)',
                 email: decryptEmail,
             },
