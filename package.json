@@ -21,6 +21,7 @@
     "express-session": "^1.15.6",
     "ipfs-api": "^26.1.2",
     "orbit-db": "^0.19.9",
+    "react-localization": "^1.0.13",
     "redis": "^2.8.0",
     "uuid": "^3.3.2"
   }

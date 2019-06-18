@@ -112,6 +112,14 @@ i.custom-badge:after {
   color: #fff;
 }
 
+.lang-option {
+  background-color: #eaeaea;
+  font-weight: bold;
+  border-bottom: 5px solid #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .breadcrumb-item.active {
   font-weight: bold;
 }
