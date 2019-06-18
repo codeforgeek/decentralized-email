@@ -15,6 +15,13 @@ var month = [
 
 var selectedTheme = "default";
 
+var lang = new Lang();
+lang.dynamic("mr", "./langpack/mr.json");
+lang.dynamic("hi", "./langpack/hi.json");
+lang.init({
+  defaultLang: "en"
+});
+
 $(function() {
   console.log("DOM Ready!");
   initialize();
@@ -40,6 +47,13 @@ const changeTheme = themeName => {
   }
 };
 
+const changeLanguage = (langKey = null) => {
+  if (langKey) {
+    window.lang.change(langKey);
+    localStorage.setItem("dec-lang", langKey);
+  }
+};
+
 const preloadTheme = () => {
   if (localStorage.getItem("dec-theme")) {
     changeTheme(localStorage.getItem("dec-theme"));
@@ -53,6 +67,7 @@ const initialize = () => {
   hideAlerts();
   registerClickEvents();
   simulateClick("sidebar-inbox");
+  changeLanguage(localStorage.getItem("dec-lang"));
 };
 
 const getLoggedInUserEmail = () => {
@@ -116,9 +131,9 @@ const updateBreadcrumb = levels => {
   var htmlStr = `<li class="breadcrumb-item" aria-current="page"><i class="fas fa-home fa-sm"></i></li>`;
   $.each(levels, (i, level) => {
     if (i === levels.length - 1)
-      htmlStr += `<li class="breadcrumb-item active" aria-current="page">${level}</li>`;
+      htmlStr += `<li lang="en" class="breadcrumb-item active" aria-current="page">${level}</li>`;
     else
-      htmlStr += `<li class="breadcrumb-item" aria-current="page">${level}</li>`;
+      htmlStr += `<li lang="en" class="breadcrumb-item" aria-current="page">${level}</li>`;
   });
   $("#breadcrumb").html(htmlStr);
 };
@@ -126,13 +141,13 @@ const updateBreadcrumb = levels => {
 const formatDate = date => {
   if (typeof date === "string") date = Number.parseInt(date);
   var emailDate = new Date(date);
-  return `${emailDate.getDate()} ${
+  return `<span lang="en" class="dd">${emailDate.getDate()}</span> <span lang="en" class="mmm">${
     month[emailDate.getMonth()]
-  }, ${emailDate.getHours()}:${
+  }</span>, <span lang="en" class="hh">${emailDate.getHours()}</span>:<span lang="en" class="mm">${
     emailDate.getMinutes() < 10
       ? `0${emailDate.getMinutes()}`
       : emailDate.getMinutes()
-  }`;
+  }</span>`;
 };
 
 const getMailLineItem = email => {
@@ -143,9 +158,9 @@ const getMailLineItem = email => {
     email.time
   }')" class="list-group-item">
     <div class="row align-items-center">
-    <div class="col-lg-3">From: <b>${sender}</b></div>
-    <div class="col-lg-7">Subject: <b>${subject}</b></div>
-    <div class="col-lg-2" style="font-size: 11px; text-align: right;"><b>${mailTime}</b></div>
+    <div  class="col-lg-3"><span lang="en">From</span>: <b>${sender}</b></div>
+    <div lang="en" class="col-lg-7"><span lang="en">Subject</span>: <b>${subject}</b></div>
+    <div class="col-lg-2" style="font-size: 11px; text-align: right;"><b lang="en">${mailTime}</b></div>
   </div>
   </li>`;
 };
@@ -197,9 +212,9 @@ const accept = reqId => {
 const renderNoData = (title = "No Data Found", subTitle = "") => {
   var htmlStr = `<div class="col text-center">
   <i class="fa fa-7x fa-exclamation-circle mb-3"></i>
-  <p class="lead text-gray-800">${title}</p>
-  <p class="text-gray-500 mb-0">${subTitle}</p>
-  <a href="#" onclick="simulateClick('sidebar-dashboard')" >Back to Dashboard</a>
+  <p lang="en" class="lead text-gray-800">${title}</p>
+  <p lang="en" class="text-gray-500 mb-0">${subTitle}</p>
+  <a lang="en" href="#" onclick="simulateClick('sidebar-dashboard')" >Back to Dashboard</a>
 </div>`;
   $("div#current-pane").html(htmlStr);
 };
@@ -252,7 +267,7 @@ const getContactRequestLineItem = request => {
             <i>${publicKey}</i>
           </b> 
         </div>
-        <div style="font-size: 11px;">Sent on: <b>${requestTime}</b></div>
+        <div style="font-size: 11px;"><span lang="en">Sent on:</span> <b lang="en">${requestTime}</b></div>
      </div>
      <div class="col-lg-5" style="font-size: 11px; text-align: right;">
         <div class="dropdown-divider lg-none xl-none"></div>
@@ -260,13 +275,13 @@ const getContactRequestLineItem = request => {
           <span class="icon text-white-50">
             <i class="fa-user-plus fas" style="color: #3cc535;"></i>
           </span>
-          <span class="text">Accept</span>
+          <span lang="en" class="text">Accept</span>
         </a>
         <a href="#" class="btn btn-icon-split btn-primary btn-sm ml-2" onclick="reject('${requestId}')">
           <span class="icon text-white-50">
             <i class="fa-user-times fas" style="color: #e74a3b;"></i>
           </span>
-          <span class="text">Reject</span>
+          <span lang="en" class="text">Reject</span>
         </a>
      </div>
   </div>
@@ -380,21 +395,21 @@ const renderForwardSection = subject => {
   </div>
   <form class="user">
      <div class="form-group row">
-        <label for="recipient-email" class="col-xl-1 col-form-label"><b>Email </b></label>
+        <label for="recipient-email" class="col-xl-1 col-form-label"><b lang="en">Email </b></label>
         <div class="col-xl-11">
-           <input type="email" class="form-control" id="recipient-email" placeholder="Enter email address">
+           <input lang="en" type="email" class="form-control" id="recipient-email" placeholder="Enter email address">
         </div>
      </div>
      <div class="form-group row">
-        <label for="email-subject" class="col-xl-1 col-form-label"><b>Subject </b></label>
+        <label for="email-subject" class="col-xl-1 col-form-label"><b lang="en">Subject </b></label>
         <div class="col-xl-11">
-           <input type="text" value="Forward: ${subject}" class="form-control" id="email-subject" placeholder="Enter email subject">
+           <input lang="en" type="text" value="Forward: ${subject}" class="form-control" id="email-subject" placeholder="Enter email subject">
         </div>
      </div>
      <div class="form-group row">
-        <label for="email-body" class="col-xl-1 col-form-label"><b>Message </b></label>
+        <label for="email-body" class="col-xl-1 col-form-label"><b lang="en">Message </b></label>
         <div class="col-xl-11">
-           <textarea rows="20" type="text" class="form-control" id="email-body" placeholder="Enter email body">${$(
+           <textarea lang="en" rows="20" type="text" class="form-control" id="email-body" placeholder="Enter email body">${$(
              "#rendered-email-body"
            ).html()}</textarea>
         </div>
@@ -409,7 +424,7 @@ const renderForwardSection = subject => {
      </div> -->
      <div class="row justify-content-center">
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6" style="padding: 2%;">
-           <a href="#" onclick="sendEmail()" class="btn btn-user btn-block" style="background-color: green; color: #fff; font-weight: bold; font-size: 1rem;">
+           <a lang="en" href="#" onclick="sendEmail()" class="btn btn-user btn-block" style="background-color: green; color: #fff; font-weight: bold; font-size: 1rem;">
            Send
            </a>
         </div>
@@ -434,21 +449,21 @@ const renderReplySection = (recipientEmail, subject) => {
     </div>
   <form class="user">
      <div class="form-group row">
-        <label for="recipient-email" class="col-xl-1 col-form-label"><b>Email </b></label>
+        <label for="recipient-email" class="col-xl-1 col-form-label"><b lang="en">Email </b></label>
         <div class="col-xl-11">
-           <input type="email" value="${recipientEmail}" class="form-control" id="recipient-email" placeholder="Enter email address" disabled>
+           <input lang="en" type="email" value="${recipientEmail}" class="form-control" id="recipient-email" placeholder="Enter email address" disabled>
         </div>
      </div>
      <div class="form-group row">
-        <label for="email-subject" class="col-xl-1 col-form-label"><b>Subject </b></label>
+        <label for="email-subject" class="col-xl-1 col-form-label"><b lang="en">Subject </b></label>
         <div class="col-xl-11">
-           <input type="text" value="${subject}" class="form-control" id="email-subject" placeholder="Enter email subject">
+           <input lang="en" type="text" value="${subject}" class="form-control" id="email-subject" placeholder="Enter email subject">
         </div>
      </div>
      <div class="form-group row">
-        <label for="email-body" class="col-xl-1 col-form-label"><b>Message </b></label>
+        <label for="email-body" class="col-xl-1 col-form-label"><b lang="en">Message </b></label>
         <div class="col-xl-11">
-           <textarea rows="20" type="text" class="form-control" id="email-body" placeholder="Enter email body"></textarea>
+           <textarea lang="en" rows="20" type="text" class="form-control" id="email-body" placeholder="Enter email body"></textarea>
         </div>
      </div>
      <!--<div class="form-group row">
@@ -461,7 +476,7 @@ const renderReplySection = (recipientEmail, subject) => {
      </div> -->
      <div class="row justify-content-center">
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6" style="padding: 2%;">
-           <a href="#" onclick="sendEmail()" class="btn btn-user btn-block" style="background-color: green; color: #fff; font-weight: bold; font-size: 1rem;">
+           <a lang="en" href="#" onclick="sendEmail()" class="btn btn-user btn-block" style="background-color: green; color: #fff; font-weight: bold; font-size: 1rem;">
            Send
            </a>
         </div>
@@ -543,14 +558,14 @@ const renderRequestSection = () => {
   <div class="col">
     <div class="p-sm-1 p-md-3 p-lg-5 p-xl-5">
       <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-2">Send a connection request</h1>
-        <p class="mb-4">Kindly enter the email address below and we'll send connection request to the recipient!</p>
+        <h1 lang="en" class="h4 text-gray-900 mb-2">Send a connection request</h1>
+        <p lang="en" class="mb-4">Kindly enter the email address below and we'll send connection request to the recipient!</p>
       </div>
       <form class="user">
         <div class="form-group">
-          <input type="email" class="form-control form-control-user" id="connRequestRecipient" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+          <input lang="en" type="email" class="form-control form-control-user" id="connRequestRecipient" aria-describedby="emailHelp" placeholder="Enter Email Address...">
         </div>
-        <a href="#" onclick="sendRequest()" class="btn btn-primary btn-user btn-block">
+        <a lang="en" href="#" onclick="sendRequest()" class="btn btn-primary btn-user btn-block">
           Send Request
         </a>
       </form>
@@ -651,7 +666,7 @@ const renderMail = (mailId, mailTime, mailRes) => {
                 <div class="col-sm-12 mail-view-to">to: you</div>
             </div>
             <div class="col-sm-3 text-right mail-view-time row no-gutters align-items-center" >
-              <div class="col-6 col-sm-12 order-last order-sm-first" ><b>${formatDate(
+              <div class="col-6 col-sm-12 order-last order-sm-first" ><b lang="en">${formatDate(
                 mailTime
               )}</b></div>
               <div id="attachments" class="col-6 col-sm-12 order-first order-sm-last">
@@ -674,7 +689,7 @@ const renderMail = (mailId, mailTime, mailRes) => {
             mailRes.from
           }','${mailRes.subject}')">
           <i class="fas fa-reply"></i>
-          Reply
+          <span lang="en">Reply</span>
           </a>
       </div>
       <!-- <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12" style="padding: 2%;">
@@ -684,11 +699,11 @@ const renderMail = (mailId, mailTime, mailRes) => {
           </a>
       </div> -->
       <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12" style="padding: 2%;">
-          <a href="#" class="btn btn-user btn-sm btn-block mail-action-buttons" onclick="renderForwardSection('${
+          <a lang="en" href="#" class="btn btn-user btn-sm btn-block mail-action-buttons" onclick="renderForwardSection('${
             mailRes.subject
           }')">
           <i class="fas fa-share"></i>
-          Forward
+          <span lang="en">Forward</span>
           </a>
       </div>
     </div>  
@@ -700,21 +715,21 @@ const renderComposeSection = () => {
   $("div#current-pane").html(`<div class="col">
   <form class="user">
      <div class="form-group row">
-        <label for="recipient-email" class="col-xl-1 col-form-label"><b>Email </b></label>
+        <label for="recipient-email" class="col-xl-1 col-form-label"><b lang="en">Email </b></label>
         <div class="col-xl-11">
-           <input type="email" class="form-control" id="recipient-email" placeholder="Enter email address">
+           <input lang="en" type="email" class="form-control" id="recipient-email" placeholder="Enter email address">
         </div>
      </div>
      <div class="form-group row">
-        <label for="email-subject" class="col-xl-1 col-form-label"><b>Subject </b></label>
+        <label for="email-subject" class="col-xl-1 col-form-label"><b lang="en">Subject </b></label>
         <div class="col-xl-11">
-           <input type="text" class="form-control" id="email-subject" placeholder="Enter email subject">
+           <input lang="en" type="text" class="form-control" id="email-subject" placeholder="Enter email subject">
         </div>
      </div>
      <div class="form-group row">
-        <label for="email-body" class="col-xl-1 col-form-label"><b>Message </b></label>
+        <label for="email-body" class="col-xl-1 col-form-label"><b lang="en">Message </b></label>
         <div class="col-xl-11">
-           <textarea rows="20" type="text" class="form-control" id="email-body" placeholder="Enter email body" />
+           <textarea lang="en" rows="20" type="text" class="form-control" id="email-body" placeholder="Enter email body" />
         </div>
      </div>
      <!--<div class="form-group row">
@@ -727,7 +742,7 @@ const renderComposeSection = () => {
      </div> -->
      <div class="row justify-content-center">
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6" style="padding: 2%;">
-           <a href="#" onClick="sendEmail()" class="btn btn-user btn-block" style="background-color: green; color: #fff; font-weight: bold; font-size: 1rem;">
+           <a lang="en" href="#" onClick="sendEmail()" class="btn btn-user btn-block" style="background-color: green; color: #fff; font-weight: bold; font-size: 1rem;">
            Send
            </a>
         </div>
