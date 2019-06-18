@@ -216,6 +216,24 @@ async function getUserContacts(data) {
     }
 }
 
+async function findIfContactExists(userId, contactId) {
+    try {
+        let userContactData = userContactsDb.query((doc) => doc.userId === userId && doc.contactId === contactId);
+        return {
+            "error": false,
+            "data": userContactData,
+            "message": "Success"
+        };
+    }
+    catch (e) {
+        return {
+            "error": true,
+            "data": null,
+            "message": "failure"
+        };
+    }
+}
+
 async function getUserContactsRequest(data) {
     try {
         let contactRequestData = [];
@@ -308,6 +326,11 @@ async function getEmails(email) {
     return data;
 }
 
+async function getSentEmails(email) {
+    let data = userEmailsDb.query((doc) => doc.from === email);
+    return data;
+}
+
 async function searchContact(contactId) {
     let data = userContactsDb.query((doc) => doc._id === contactId);
     return data;
@@ -322,6 +345,17 @@ async function addUserContact(data) {
     try {
         let id = uuid();
         let fetchContactData = await getUserByEmail(data.contactEmail);
+        if(fetchContactData.length === 0) {
+            throw new Error('User does not exists.');
+        }
+        // check if the user is already in the contact book
+        let checkIfExists = await findIfContactExists(data.userId, fetchContactData[0]['_id']);
+        if(checkIfExists.error) {
+            throw new Error(checkIfExists.message);
+        }
+        if(checkIfExists.data.length > 0) {
+            throw new Error('Contact already exists');
+        }
         let contactData = {
             _id: id,
             userId: data.userId,
@@ -345,7 +379,7 @@ async function addUserContact(data) {
         return {
             "error": true,
             "hash": null,
-            "message": "Failure"
+            "message": e.message || "Failure"
         };
     }
 }
@@ -356,6 +390,17 @@ async function sendEmail(data) {
         let id = uuid();
         let senderData = await getUserByEmail(data.from);
         let reciepentData = await getUserByEmail(data.to);
+        let checkIfExists = await findIfContactExists(senderData[0]['_id'], reciepentData[0]['_id']);
+        console.log(checkIfExists)
+        if(checkIfExists.error) {
+            throw new Error(checkIfExists.message);
+        }
+        if(checkIfExists.data.length === 0) {
+            throw new Error('Contact does not exist, please add contact.');
+        }
+        if(checkIfExists.data[0].status !== 1) {
+            throw new Error('Contact is not approved yet.');
+        }
         let email = data.email;
         let signatureData = signMessage(email, { privateKey: senderData[0].privateKey, publicKey: reciepentData[0].publicKey });
         let emailData = {
@@ -382,7 +427,7 @@ async function sendEmail(data) {
         return {
             "error": true,
             "hash": null,
-            "message": "Failure"
+            "message": e.message || "Failure"
         };
     }
 }
@@ -404,6 +449,27 @@ async function getUserEmail(data) {
         };
     }
 }
+
+
+async function getUserSentEmail(data) {
+    try {
+        let emailData = await getSentEmails(data.email);
+        return {
+            "error": false,
+            "data": emailData,
+            "message": "Success"
+        };
+    }
+    catch (e) {
+        return {
+            "error": true,
+            "data": null,
+            "message": "Failure"
+        };
+    }
+}
+
+getUserSentEmail
 
 async function readEmail(data) {
     try {
@@ -476,4 +542,5 @@ module.exports = {
     readEmail: readEmail,
     getUserContactsRequest: getUserContactsRequest,
     checkUserEmail: checkUserEmail,
+    getUserSentEmail: getUserSentEmail,
 }
