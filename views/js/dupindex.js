@@ -87,6 +87,7 @@ const hideAlerts = () => {
 
 const registerClickEvents = () => {
   registerInboxClick();
+  registerSentClick();
   registerComposeClick();
   registerContactsClick();
   registerDashboardClick();
@@ -150,13 +151,13 @@ const formatDate = date => {
   }</span>`;
 };
 
-const getMailLineItem = email => {
+const getMailLineItem = (email, source) => {
   var sender = email.from.split("@")[0] || "No Sender";
   var subject = email.subject ? email.subject : "(No Subject)";
   var mailTime = formatDate(email.time);
   return `<li onClick="openMail('${email._id}','${
     email.time
-  }')" class="list-group-item">
+  }','${source}')" class="list-group-item">
     <div class="row align-items-center">
     <div  class="col-lg-3"><span lang="en">From</span>: <b>${sender}</b></div>
     <div lang="en" class="col-lg-7"><span lang="en">Subject</span>: <b>${subject}</b></div>
@@ -165,13 +166,14 @@ const getMailLineItem = email => {
   </li>`;
 };
 
-const renderInboxMails = mails => {
-  updateBreadcrumb(["Inbox"]);
+const renderMails = (mails = [], source = "inbox") => {
+  if (source === "inbox") updateBreadcrumb(["Inbox"]);
+  else if (source === "sent") updateBreadcrumb(["Sent"]);
 
   if (mails && mails.length > 0) {
     var htmlStr = `<div class="col shadow"><ul id="inbox-mails" class="mail-list list-group">`;
     $.each(mails, (i, mail) => {
-      htmlStr += getMailLineItem(mail);
+      htmlStr += getMailLineItem(mail, source);
     });
     htmlStr += `</ul></div>`;
     $("div#current-pane").html(htmlStr);
@@ -644,8 +646,10 @@ const renderContactsTable = () => {
   $("div#current-pane").html(htmlStr);
 };
 
-const renderMail = (mailId, mailTime, mailRes) => {
-  updateBreadcrumb(["Inbox", `Mail: ${mailId}`]);
+const renderMail = (mailId, mailTime, mailRes, source) => {
+  if (source === "inbox") updateBreadcrumb(["Inbox", `Mail: ${mailId}`]);
+  else if (source === "sent") updateBreadcrumb(["Sent", `Mail: ${mailId}`]);
+
   $("div#current-pane").html("");
   $("div#current-pane")
     .html(`<div id="mail-view" class="container-fluid shadow">
@@ -766,7 +770,28 @@ const registerInboxClick = () => {
         if (data.error) {
           alert(data.message);
         } else {
-          renderInboxMails(data.data);
+          renderMails(data.data, "inbox");
+        }
+      },
+      error: function() {
+        alert("error");
+      }
+    });
+  });
+};
+
+const registerSentClick = () => {
+  $("#sidebar-sent").click(function(e) {
+    e.preventDefault();
+    $.ajax({
+      type: "GET",
+      url: "../api/email/sent",
+      success: function(data) {
+        if (data.error) {
+          alert(data.message);
+        } else {
+          renderMails(data.data, "sent");
+          console.log("Sent mail response", data);
         }
       },
       error: function() {
@@ -881,13 +906,13 @@ const launchEmailSentModal = status => {
   }
 };
 
-const openMail = (mailId, mailTime) => {
+const openMail = (mailId, mailTime, source) => {
   $.ajax({
     type: "GET",
     url: "../api/email/" + mailId,
     success: function(data) {
       console.log("Read Mail Response:", data);
-      renderMail(mailId, mailTime, data.data);
+      renderMail(mailId, mailTime, data.data, source);
     },
     error: function() {
       alert("error");
