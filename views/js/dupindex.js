@@ -500,12 +500,12 @@ const renderConnectionSuccessPanel = () => {
     <div class="p-sm-1 p-md-3 p-lg-5 p-xl-5">
       <div class="text-center">
       <i class="fa fa-check-circle fa-7x mb-4" aria-hidden="true" style="color: green"></i>
-        <h1 class="h4 text-gray-900 mb-2">Connection request sent!</h1>
-        <p class="mb-4">A connection request has been sent to <b>${$(
-          "#connRequestRecipient"
-        ).val()}</b>. You'll be connected when the recipient accepts the request.</p>
-
-        <a href="#" onclick="simulateClick('sidebar-inbox')" class="btn btn-primary btn-user">
+        <h1 lang="en" class="h4 text-gray-900 mb-2">Connection request sent!</h1>
+        <p class="mb-4">
+          <span lang="en">A connection request has been sent.</span> 
+          <span lang="en">You'll be connected when the recipient accepts the request.</span>
+        </p>
+        <a  lang="en" href="#" onclick="simulateClick('sidebar-inbox')" class="btn btn-primary btn-user">
         Back
       </a>
       </div>
@@ -524,9 +524,9 @@ const renderConnectionFailedPanel = () => {
     <div class="p-sm-1 p-md-3 p-lg-5 p-xl-5">
       <div class="text-center">
       <i class="fa fa-exclamation-triangle fa-7x mb-4" aria-hidden="true" style="color: red"></i>
-        <h1 class="h4 text-gray-900 mb-2">Connection request could not be sent!</h1>
-        <p class="mb-4">Please try again later.</p>
-        <a href="#" onclick="simulateClick('sidebar-inbox')" class="btn btn-primary btn-user">
+        <h1 lang="en" class="h4 text-gray-900 mb-2">Connection request could not be sent!</h1>
+        <p lang="en" class="mb-4">Please try again later.</p>
+        <a lang="en" href="#" onclick="simulateClick('sidebar-inbox')" class="btn btn-primary btn-user">
         Back
       </a>
       </div>
