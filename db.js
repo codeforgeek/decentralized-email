@@ -469,13 +469,11 @@ async function getUserSentEmail(data) {
     }
 }
 
-getUserSentEmail
-
 async function readEmail(data) {
     try {
-        let emailData = userEmailsDb.query((doc) => doc._id === data.id && doc.to === data.email);
+        let emailData = userEmailsDb.query((doc) => doc._id === data.id);
         let userData = await getUserByEmail(data.email);
-        let senderData = await getUserByEmail(emailData[0].from);
+        let senderData = await getUserByEmail(data.source === 'inbox' ? emailData[0].from: emailData[0].to);
         let decryptEmail = verifyMessage({
             email: emailData[0].email,
             signature: emailData[0].signature
