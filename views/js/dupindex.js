@@ -694,7 +694,9 @@ const renderMail = (mailId, mailTime, mailRes, source) => {
         <pre class="mail-body" id="rendered-email-body">${mailRes.email}</pre>
       </div>
     </div>
-    <div class="row" id="include-reply">
+    <div class="row" id="include-reply" style="display: ${
+      source === "inbox" ? "" : "none"
+    }">
       <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12" style="padding: 2%;">
           <a href="#" class="btn btn-sm btn-user btn-block mail-action-buttons" onclick="renderReplySection('${
             mailRes.from
@@ -703,12 +705,6 @@ const renderMail = (mailId, mailTime, mailRes, source) => {
           <span lang="en">Reply</span>
           </a>
       </div>
-      <!-- <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12" style="padding: 2%;">
-          <a href="#" class="btn btn-user btn-sm btn-block mail-action-buttons">
-          <i class="fas fa-reply-all"></i>
-          Reply all
-          </a>
-      </div> -->
       <div class="col-xl-2 col-lg-3 col-md-3 col-sm-12" style="padding: 2%;">
           <a lang="en" href="#" class="btn btn-user btn-sm btn-block mail-action-buttons" onclick="renderForwardSection('${
             mailRes.subject
