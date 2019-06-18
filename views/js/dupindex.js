@@ -152,14 +152,19 @@ const formatDate = date => {
 };
 
 const getMailLineItem = (email, source) => {
-  var sender = email.from.split("@")[0] || "No Sender";
+  var sender =
+    source === "inbox"
+      ? email.from.split("@")[0]
+      : email.to.split("@")[0] || "No Sender";
   var subject = email.subject ? email.subject : "(No Subject)";
   var mailTime = formatDate(email.time);
   return `<li onClick="openMail('${email._id}','${
     email.time
   }','${source}')" class="list-group-item">
     <div class="row align-items-center">
-    <div  class="col-lg-3"><span lang="en">From</span>: <b>${sender}</b></div>
+    <div  class="col-lg-3"><span lang="en">${
+      source === "inbox" ? "From" : "To"
+    }</span>: <b>${sender}</b></div>
     <div lang="en" class="col-lg-7"><span lang="en">Subject</span>: <b>${subject}</b></div>
     <div class="col-lg-2" style="font-size: 11px; text-align: right;"><b lang="en">${mailTime}</b></div>
   </div>
@@ -667,7 +672,9 @@ const renderMail = (mailId, mailTime, mailRes, source) => {
         <div class="row no-gutters">
             <div class="col-sm-9 row no-gutters mail-view-from">
                 <b class="col-sm-12">${mailRes.from}</b>
-                <div class="col-sm-12 mail-view-to">to: you</div>
+                <div class="col-sm-12 mail-view-to">to: ${
+                  source === "inbox" ? "you" : mailRes.to
+                }</div>
             </div>
             <div class="col-sm-3 text-right mail-view-time row no-gutters align-items-center" >
               <div class="col-6 col-sm-12 order-last order-sm-first" ><b lang="en">${formatDate(
@@ -906,10 +913,10 @@ const launchEmailSentModal = status => {
   }
 };
 
-const openMail = (mailId, mailTime, source) => {
+const openMail = (mailId, mailTime, source = "inbox") => {
   $.ajax({
     type: "GET",
-    url: "../api/email/" + mailId,
+    url: `../api/email/${source}/${mailId}`,
     success: function(data) {
       console.log("Read Mail Response:", data);
       renderMail(mailId, mailTime, data.data, source);
