@@ -274,11 +274,12 @@ router.get("/email/sent", async (req, res) => {
  * Open specific email
  */
 
-router.get("/email/:id", async (req, res) => {
+router.get("/email/:source/:id", async (req, res) => {
   if (req.session.key) {
     let data = {
       id: req.params.id,
-      email: req.session.key.email
+      email: req.session.key.email,
+      source: req.params.source || 'inbox'
     };
     let response = await db.readEmail(data);
     if (response.error) {
