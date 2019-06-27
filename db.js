@@ -3,40 +3,10 @@ const OrbitDB = require('orbit-db');
 const uuid = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
+const Identities = require('orbit-db-identity-provider');
 const addressGenerator = require('./utils/genkey');
 const signMessage = require('./utils/sign');
 const verifyMessage = require('./utils/verify');
-
-const ipfsOptions = {
-    EXPERIMENTAL: {
-        pubsub: true
-    },
-    relay: {
-        enabled: true, hop: {
-            enabled: true, active: true
-        }
-    },
-    host: 'localhost',
-    port: '5001'
-};
-
-// Create IPFS instance
-const ipfs = new IPFS(ipfsOptions);
-const orbitdb = new OrbitDB(ipfs);
-
-// ipfs.swarm.connect('/ip4/49.32.207.32/tcp/4001/ipfs/QmNtjSfnZAQ9PhEMGqfWTkSdhU7CGbSfXvyfGMipypm4UV', (err) => {
-//     if(err) {
-//         return console.log(err);
-//     }    
-//     console.log('connected');
-// })
-
-// ipfs.swarm.peers((err, info) => {
-//     if(err) {
-//         return console.log(err);
-//     }
-//     //console.log(info);
-// });
 
 // load all dbs
 let filePath = './dbaddress.js';
@@ -45,6 +15,27 @@ let userContactsDb = null;
 let userEmailsDb = null;
 
 async function loadDB() {
+    const ipfsOptions = {
+        EXPERIMENTAL: {
+            pubsub: true
+        },
+        relay: {
+            enabled: true, hop: {
+                enabled: true, active: true
+            }
+        },
+        host: 'localhost',
+        port: '5001'
+    };
+    
+    // create identity
+    const IdOptions = { id: 'local-id'};
+    var identity = await Identities.createIdentity(IdOptions);
+    
+    // Create IPFS instance
+    const ipfs = new IPFS(ipfsOptions);
+    const orbitdb = new OrbitDB(ipfs, identity);
+    
     console.log('loading the databases');
     try {
         //loads all db
