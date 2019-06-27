@@ -47,15 +47,21 @@ async function loadDB() {
                 console.log('Creating databases and path files\n');
                 // create dbs
                 userDb = await orbitdb.create('email.user', 'docstore', {
-                    write: ['*']
+                    accessController: {
+                        write: ['*']
+                    }                    
                 });
 
                 userContactsDb = await orbitdb.create('email.user.contacts', 'docstore', {
-                    write: ['*']
+                    accessController: {
+                        write: ['*']
+                    }   
                 });
 
                 userEmailsDb = await orbitdb.create('email.user.data', 'docstore', {
-                    write: ['*']
+                    accessController: {
+                        write: ['*']
+                    }   
                 });
                 let fileContents = {
                     "user": userDb.address.toString(),
