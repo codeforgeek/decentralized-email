@@ -35,6 +35,22 @@ async function loadDB() {
     // Create IPFS instance
     const ipfs = new IPFS(ipfsOptions);
     const orbitdb = new OrbitDB(ipfs, identity);
+
+    const interval = setInterval(function() {
+        // connect to the cloud
+        try {
+            ipfs.swarm.connect('/ip4/18.215.233.80/tcp/4001/ipfs/QmZ4qE3R6RKbPju3rP9bAtYyXmdp76pZGt7AYU66kUGmJa', (err) => {
+                if(err) {
+                    console.log('error occurred connecting to cloud');
+                    return;
+                }
+                console.log('connected to the cloud');
+            });
+        }
+        catch(e) {
+            console.log('Error occurred connecting to the cloud peer');
+        }
+      }, 10000);
     
     console.log('loading the databases');
     try {
