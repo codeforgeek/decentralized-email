@@ -10,10 +10,6 @@ const router = express.Router();
 const db = require("./db");
 const path = require("path");
 
-// app.set('views', path.join(__dirname, 'views'));
-// app.engine('html', require('ejs').renderFile);
-
-// app.use(express.static(path.join(__dirname, 'views')));
 app.use(express.static(__dirname + "/views/"));
 app.use(express.static(__dirname + "/views/js"));
 app.use(express.static(__dirname + "/views/css"));
@@ -26,10 +22,10 @@ app.use(
       host: "localhost",
       port: 6379,
       client: client,
-      ttl: 10000
+      ttl: 10000,
     }),
     saveUninitialized: false,
-    resave: false
+    resave: false,
   })
 );
 
@@ -49,10 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  // if (req.session.key) {
   res.sendFile("newlogin.html", { root: __dirname + "/views" });
-  // }
-  // return res.redirect('/');
 });
 
 app.get("/register", (req, res) => {
@@ -64,10 +57,7 @@ app.get("/mailbox", (req, res) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  // if (req.session.key) {
   res.sendFile("dashboard.html", { root: __dirname + "/views" });
-  // }
-  // return res.redirect('/');
 });
 
 /**
@@ -91,7 +81,7 @@ router.post("/user", async (req, res) => {
     req.session.key = {
       userId: response.data["_id"],
       email: response.data.email,
-      publicKey: response.data.publicKey
+      publicKey: response.data.publicKey,
     };
     res.json({ error: false, message: "User added.", hash: response.hash });
   }
@@ -112,12 +102,12 @@ router.post("/login", async (req, res) => {
   req.session.key = {
     userId: response.data.userId,
     email: response.data.email,
-    publicKey: response.data.publicKey
+    publicKey: response.data.publicKey,
   };
   res.json({
     error: false,
     message: "User logged in.",
-    email: req.session.key.email
+    email: req.session.key.email,
   });
 });
 
@@ -152,7 +142,7 @@ router.post("/user/contacts", async (req, res) => {
       // user trying to add himself as contact
       return res.json({
         error: true,
-        message: "You can't add yourself as contact"
+        message: "You can't add yourself as contact",
       });
     }
     // add contact email information
@@ -225,7 +215,7 @@ router.post("/email", async (req, res) => {
     // add from address
     let response = await db.sendEmail(data);
     if (response.error) {
-      return res.json({ error: true, message: response.message || 'Failure' });
+      return res.json({ error: true, message: response.message || "Failure" });
     }
     res.json({ error: false, message: "success" });
   } else {
@@ -250,7 +240,6 @@ router.get("/email", async (req, res) => {
     return res.json({ error: true, message: "Invalid session" });
   }
 });
-
 
 /**
  * Get the emails sent by the user
@@ -279,7 +268,7 @@ router.get("/email/:source/:id", async (req, res) => {
     let data = {
       id: req.params.id,
       email: req.session.key.email,
-      source: req.params.source || 'inbox'
+      source: req.params.source || "inbox",
     };
     let response = await db.readEmail(data);
     if (response.error) {
