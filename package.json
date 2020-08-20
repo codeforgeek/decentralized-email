@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "asymmetric-crypto": "^1.0.2",
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^5.0.0",
     "bitcoinjs-lib": "^4.0.3",
     "bitcoinjs-message": "^2.0.0",
     "body-parser": "^1.18.3",
