@@ -16,11 +16,14 @@ let userEmailsDb = null;
 
 async function loadDB() {
   const ipfsOptions = {
-    repo: "./ipfs2",
+    repo: "./ipfs1",
     config: {
       Addresses: {
-        Swarm: ["/ip4/0.0.0.0/tcp/4004", "/ip4/127.0.0.1/tcp/4005/ws"],
+        Swarm: ["/ip4/0.0.0.0/tcp/4002", "/ip4/127.0.0.1/tcp/4003/ws"],
       },
+      Bootstrap: [
+        '/ip4/172.31.59.103/tcp/4004/p2p/QmTH8UWTgVk2oNA4uWdvtEFKidwfPTJbZqCPY42eWgSaER'
+     ]
     },
     EXPERIMENTAL: {
       pubsub: true,
