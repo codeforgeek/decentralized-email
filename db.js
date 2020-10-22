@@ -22,7 +22,7 @@ async function loadDB() {
         Swarm: ["/ip4/0.0.0.0/tcp/4002", "/ip4/127.0.0.1/tcp/4003/ws"],
       },
       Bootstrap: [
-        '/ip4/172.31.59.103/tcp/4004/p2p/QmTH8UWTgVk2oNA4uWdvtEFKidwfPTJbZqCPY42eWgSaER'
+        '/ip4/157.230.88.245/tcp/4006/p2p/QmZRqBUM4Eiohp9Mv1BEVcJMgxoWFzrTiistYtqPxQdVMH'
      ]
     },
     EXPERIMENTAL: {

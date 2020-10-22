@@ -1,1 +1,0 @@
-{"user":"/orbitdb/zdpuAqfMdfHv5runQnjyupvT1DqsXjYQ4vAfDR9gH5m5NetHr/email.user","contacts":"/orbitdb/zdpuAyw36Tf4d3r6NVUaW9Ma1NDZ66d8ft21PAm4L5WKmBnKG/email.user.contacts","emails":"/orbitdb/zdpuAnzWttxa6cQtq8VNKCTKLF2j364YHwWm84Kt8SRacyHqL/email.user.data"}
