@@ -13,6 +13,7 @@ const path = require("path");
 app.use(express.static(__dirname + "/views/"));
 app.use(express.static(__dirname + "/views/js"));
 app.use(express.static(__dirname + "/views/css"));
+app.use(express.static(__dirname + "/views/vendor"));
 
 // session middleware
 app.use(
@@ -40,23 +41,23 @@ app.use(bodyParser.json());
 /**
  * Home page route
  */
-app.get("/", (req, res) => {
+app.get("/demo/dmail/", (req, res) => {
   res.sendFile("home.html", { root: __dirname + "/views" });
 });
 
-app.get("/login", (req, res) => {
+app.get("/demo/dmail/login", (req, res) => {
   res.sendFile("newlogin.html", { root: __dirname + "/views" });
 });
 
-app.get("/register", (req, res) => {
+app.get("/demo/dmail/register", (req, res) => {
   res.sendFile("newregister.html", { root: __dirname + "/views" });
 });
 
-app.get("/mailbox", (req, res) => {
+app.get("/demo/dmail/mailbox", (req, res) => {
   res.sendFile("mailbox.html", { root: __dirname + "/views" });
 });
 
-app.get("/dashboard", (req, res) => {
+app.get("/demo/dmail/dashboard", (req, res) => {
   res.sendFile("dashboard.html", { root: __dirname + "/views" });
 });
 
@@ -293,7 +294,7 @@ app.get("/logout", (req, res) => {
   }
 });
 
-app.use("/api", router);
+app.use("/demo/dmail/api", router);
 
 app.listen(process.env.PORT || 3000);
 console.log("Listening on " + (process.env.PORT || 3000) + " port");
