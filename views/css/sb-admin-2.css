@@ -12048,12 +12048,15 @@ a:focus {
   background: url("../images/FatPoisedAmurratsnake-size_restricted.gif.gif");
   background-position: center;
   background-size: cover;
+  background-color: #0d0c0c;
 }
 
 .bg-decentralized-image {
-  background: url("./images/AjarJaggedClumber-size_restricted.gif");
+  /* background: url("./images/AjarJaggedClumber-size_restricted.gif"); */
+  background-color: rgba(90, 92, 105, 0.5);
   background-position: center;
   background-size: cover;
+
 }
 
 .bg-login-image {
