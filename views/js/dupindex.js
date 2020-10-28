@@ -10,7 +10,7 @@ var month = [
   "Sep",
   "Oct",
   "Nov",
-  "Dec"
+  "Dec",
 ];
 
 var selectedTheme = "default";
@@ -19,15 +19,15 @@ var lang = new Lang();
 lang.dynamic("mr", "./langpack/mr.json");
 lang.dynamic("hi", "./langpack/hi.json");
 lang.init({
-  defaultLang: "en"
+  defaultLang: "en",
 });
 
-$(function() {
+$(function () {
   console.log("DOM Ready!");
   initialize();
 });
 
-const simulateClick = id => {
+const simulateClick = (id) => {
   $(`#${id}`).click();
 };
 
@@ -38,7 +38,7 @@ changeThemeFile = () => {
   localStorage.setItem("dec-theme", selectedTheme);
 };
 
-const changeTheme = themeName => {
+const changeTheme = (themeName) => {
   if (themeName) {
     selectedTheme = themeName;
     changeThemeFile();
@@ -75,12 +75,12 @@ const getLoggedInUserEmail = () => {
     console.log("User Found");
     $("#current-user").html(localStorage.getItem("userEmail"));
   } else {
-    window.location.href = "./login.html";
+    window.location.href = "/demo/dmail/login";
   }
 };
 
 const hideAlerts = () => {
-  $(".custom-alert").each(function() {
+  $(".custom-alert").each(function () {
     $(this).hide();
   });
 };
@@ -95,7 +95,7 @@ const registerClickEvents = () => {
   registerAllRequestsClick();
 };
 
-const sendEmail = e => {
+const sendEmail = (e) => {
   console.log("Inside sendEmail");
   const recipientEmail = $("#recipient-email").val();
   const emailSubject = $("#email-subject").val();
@@ -104,15 +104,15 @@ const sendEmail = e => {
   var emailData = {
     to: recipientEmail,
     subject: emailSubject,
-    email: emailBody
+    email: emailBody,
   };
 
   $.ajax({
     type: "POST",
-    url: "../api/email",
+    url: "./api/email",
     data: JSON.stringify(emailData),
     contentType: "application/json",
-    success: function(data) {
+    success: function (data) {
       if (data.error) {
         console.log("Error", data.error);
         launchEmailSentModal("failed");
@@ -121,14 +121,14 @@ const sendEmail = e => {
         simulateClick("sidebar-inbox");
       }
     },
-    error: function() {
+    error: function () {
       alert("error");
       // window.location.href = 'index.html';
-    }
+    },
   });
 };
 
-const updateBreadcrumb = levels => {
+const updateBreadcrumb = (levels) => {
   var htmlStr = `<li class="breadcrumb-item" aria-current="page"><i class="fas fa-home fa-sm"></i></li>`;
   $.each(levels, (i, level) => {
     if (i === levels.length - 1)
@@ -139,7 +139,7 @@ const updateBreadcrumb = levels => {
   $("#breadcrumb").html(htmlStr);
 };
 
-const formatDate = date => {
+const formatDate = (date) => {
   if (typeof date === "string") date = Number.parseInt(date);
   var emailDate = new Date(date);
   return `<span lang="en" class="dd">${emailDate.getDate()}</span> <span lang="en" class="mmm">${
@@ -190,29 +190,29 @@ const renderMails = (mails = [], source = "inbox") => {
   }
 };
 
-const accept = reqId => {
+const accept = (reqId) => {
   var data = {
     contactRequestId: reqId,
-    action: "approve"
+    action: "approve",
   };
   $.ajax({
     type: "POST",
-    url: "../api/user/contacts/action",
+    url: "./api/user/contacts/action",
     data: JSON.stringify(data),
     contentType: "application/json",
-    success: function(data) {
+    success: function (data) {
       if (data.error) console.log("Accept operation failed!");
       else {
         $("#request-accepted-alert").fadeIn();
-        setTimeout(function() {
+        setTimeout(function () {
           $("#request-accepted-alert").fadeOut(300);
         }, 3000);
         simulateClick("sidebar-all-request");
       }
     },
-    error: function() {
+    error: function () {
       alert("error");
-    }
+    },
   });
 };
 
@@ -226,37 +226,37 @@ const renderNoData = (title = "No Data Found", subTitle = "") => {
   $("div#current-pane").html(htmlStr);
 };
 
-const reject = reqId => {
+const reject = (reqId) => {
   var data = {
     contactRequestId: reqId,
-    action: "reject"
+    action: "reject",
   };
   $.ajax({
     type: "POST",
-    url: "../api/user/contacts/action",
+    url: "./api/user/contacts/action",
     data: JSON.stringify(data),
     contentType: "application/json",
-    success: function(data) {
+    success: function (data) {
       if (data.error) console.log("Reject operation failed!");
       else {
         $("#request-rejected-alert").fadeIn();
-        setTimeout(function() {
+        setTimeout(function () {
           $("#request-rejected-alert").fadeOut(300);
         }, 3000);
         simulateClick("sidebar-all-request");
       }
     },
-    error: function() {
+    error: function () {
       alert("error");
-    }
+    },
   });
 };
 
-const getContactRequestLineItem = request => {
+const getContactRequestLineItem = (request) => {
   const {
     _id: requestId,
     senderData: { email: senderEmail, publicKey },
-    time
+    time,
   } = request;
 
   const requestTime = formatDate(time);
@@ -295,7 +295,7 @@ const getContactRequestLineItem = request => {
 </li>`;
 };
 
-const renderContactRequestsMails = requests => {
+const renderContactRequestsMails = (requests) => {
   updateBreadcrumb(["All Requests"]);
   if (requests && requests.length > 0) {
     var htmlStr = `<div class="col shadow"><ul id="contact-requests" class="mail-list list-group">`;
@@ -381,17 +381,13 @@ const renderDashboard = () => {
 
 const closeAppendedSection = () => {
   if ($("#include-reply #appended-compose-section").length !== 0) {
-    $("#include-reply")
-      .children("#appended-compose-section")
-      .remove();
+    $("#include-reply").children("#appended-compose-section").remove();
   }
 };
 
-const renderForwardSection = subject => {
+const renderForwardSection = (subject) => {
   if ($("#include-reply #appended-compose-section").length !== 0) {
-    $("#include-reply")
-      .children("#appended-compose-section")
-      .remove();
+    $("#include-reply").children("#appended-compose-section").remove();
   }
 
   $("#include-reply").append(`
@@ -444,9 +440,7 @@ const renderForwardSection = subject => {
 
 const renderReplySection = (recipientEmail, subject) => {
   if ($("#include-reply #appended-compose-section").length !== 0) {
-    $("#include-reply")
-      .children("#appended-compose-section")
-      .remove();
+    $("#include-reply").children("#appended-compose-section").remove();
   }
   $("#include-reply").append(`
   <div class="col-12" id="appended-compose-section">
@@ -541,20 +535,20 @@ const renderConnectionFailedPanel = () => {
 const sendRequest = () => {
   var recipientEmail = $("#connRequestRecipient").val();
   var requestData = {
-    contactEmail: recipientEmail
+    contactEmail: recipientEmail,
   };
   $.ajax({
     type: "POST",
-    url: "../api/user/contacts",
+    url: "./api/user/contacts",
     data: JSON.stringify(requestData),
     contentType: "application/json",
-    success: function(data) {
+    success: function (data) {
       if (data.error) renderConnectionFailedPanel();
       else renderConnectionSuccessPanel();
     },
-    error: function() {
+    error: function () {
       renderConnectionFailedPanel();
-    }
+    },
   });
 };
 
@@ -583,7 +577,7 @@ const renderRequestSection = () => {
   $("div#current-pane").html(htmlStr);
 };
 
-const getContactCard = contact => {
+const getContactCard = (contact) => {
   return `<div class="col-md-6 col-xl-3 p-2">
 <div class="card shadow h-100 py-2">
   <div class="card-body">
@@ -605,7 +599,7 @@ const getContactCard = contact => {
 </div>`;
 };
 
-const renderContactsCard = contacts => {
+const renderContactsCard = (contacts) => {
   updateBreadcrumb(["Contacts"]);
   var htmlStr = "";
   $.each(contacts, (i, contact) => {
@@ -764,32 +758,32 @@ const renderComposeSection = () => {
 };
 
 const registerInboxClick = () => {
-  $("#sidebar-inbox").click(function(e) {
+  $("#sidebar-inbox").click(function (e) {
     e.preventDefault();
     $.ajax({
       type: "GET",
-      url: "../api/email",
-      success: function(data) {
+      url: "./api/email",
+      success: function (data) {
         if (data.error) {
           alert(data.message);
         } else {
           renderMails(data.data, "inbox");
         }
       },
-      error: function() {
+      error: function () {
         alert("error");
-      }
+      },
     });
   });
 };
 
 const registerSentClick = () => {
-  $("#sidebar-sent").click(function(e) {
+  $("#sidebar-sent").click(function (e) {
     e.preventDefault();
     $.ajax({
       type: "GET",
-      url: "../api/email/sent",
-      success: function(data) {
+      url: "./api/email/sent",
+      success: function (data) {
         if (data.error) {
           alert(data.message);
         } else {
@@ -797,15 +791,15 @@ const registerSentClick = () => {
           console.log("Sent mail response", data);
         }
       },
-      error: function() {
+      error: function () {
         alert("error");
-      }
+      },
     });
   });
 };
 
 const registerComposeClick = () => {
-  $("#sidebar-compose").click(function(e) {
+  $("#sidebar-compose").click(function (e) {
     e.preventDefault();
     updateBreadcrumb(["Compose Mail"]);
     renderComposeSection();
@@ -813,61 +807,61 @@ const registerComposeClick = () => {
 };
 
 const registerContactsClick = () => {
-  $("#sidebar-contacts").click(function(e) {
+  $("#sidebar-contacts").click(function (e) {
     e.preventDefault();
     $.ajax({
       type: "GET",
-      url: "../api/user/contacts",
-      success: function(data) {
+      url: "./api/user/contacts",
+      success: function (data) {
         if (data.error) {
           alert("Error");
         } else {
           renderContactsCard(data.data);
         }
       },
-      error: function() {
+      error: function () {
         alert("error");
-      }
+      },
     });
   });
 };
 
 const registerRequestClick = () => {
-  $("#sidebar-request").click(function(e) {
+  $("#sidebar-request").click(function (e) {
     e.preventDefault();
     renderRequestSection();
   });
 };
 
 const registerAllRequestsClick = () => {
-  $("#sidebar-all-request").click(function(e) {
+  $("#sidebar-all-request").click(function (e) {
     e.preventDefault();
     $.ajax({
       type: "GET",
-      url: "../api/user/contacts/request",
-      success: function(data) {
+      url: "./api/user/contacts/request",
+      success: function (data) {
         if (data.error) {
           alert(data.message);
         } else {
           renderContactRequestsMails(data.data);
         }
       },
-      error: function() {
+      error: function () {
         alert("error");
-      }
+      },
     });
   });
 };
 
-$("#ContactRequests").click(function(e) {
+$("#ContactRequests").click(function (e) {
   e.preventDefault();
   $.ajax({
     type: "GET",
-    url: "../api/user/contacts/request",
-    success: function(data) {
+    url: "./api/user/contacts/request",
+    success: function (data) {
       $(emails).html("");
       $(emails).append('<li class="list-group"><b>Names</b></li>');
-      $.each(data.data, function(i, contact) {
+      $.each(data.data, function (i, contact) {
         var contactEmail = contact.senderData.email.split("@");
         $(emails).append(
           "<li list-group-item>Name:" +
@@ -881,29 +875,29 @@ $("#ContactRequests").click(function(e) {
         );
       });
     },
-    error: function() {
+    error: function () {
       alert("error");
-    }
+    },
   });
 });
 
 const registerDashboardClick = () => {
-  $("#sidebar-dashboard").click(function(e) {
+  $("#sidebar-dashboard").click(function (e) {
     e.preventDefault();
     renderDashboard();
   });
 };
 
-const launchEmailSentModal = status => {
+const launchEmailSentModal = (status) => {
   console.log("In launchEmailSentModal", status);
   if (status === "success") {
     $("#email-sent-success-alert").fadeIn();
-    setTimeout(function() {
+    setTimeout(function () {
       $("#email-sent-success-alert").fadeOut(300);
     }, 3000);
   } else {
     $("#email-sent-failed-alert").fadeIn();
-    setTimeout(function() {
+    setTimeout(function () {
       $("#email-sent-failed-alert").fadeOut(300);
     }, 3000);
   }
@@ -913,12 +907,12 @@ const openMail = (mailId, mailTime, source = "inbox") => {
   $.ajax({
     type: "GET",
     url: `../api/email/${source}/${mailId}`,
-    success: function(data) {
+    success: function (data) {
       console.log("Read Mail Response:", data);
       renderMail(mailId, mailTime, data.data, source);
     },
-    error: function() {
+    error: function () {
       alert("error");
-    }
+    },
   });
 };

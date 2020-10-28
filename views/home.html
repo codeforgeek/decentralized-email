@@ -13,21 +13,37 @@
     <title>Decentralized Mail</title>
 
     <!-- Custom fonts for this template-->
-    <link href="/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i|Play:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.css" rel="stylesheet">
 
     <style>
+        body {
+            font-family: "Play", sans-serif;
+        }
+
+        .header-link:hover {
+            background-color: #ffffff3d !important;
+            transition: 0.5s all;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .header-link a {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
         .bg-decentralized {
             width: 100%;
             height: 100%;
             position: relative;
             overflow-x: hidden;
-            background: linear-gradient(to bottom, rgba(22, 22, 22, .3) 0, rgba(22, 22, 22, .5) 100%, #161616 100%), url(https://cdn-images-1.medium.com/max/1600/1*Ihd8eEM7cUZ4jXpMYSL2xQ.jpeg);
+            background: linear-gradient(to bottom, rgba(22, 22, 22, .3) 0, rgba(22, 22, 22, 1) 100%, #161616 100%), url(https://cdn-images-1.medium.com/max/1600/1*Ihd8eEM7cUZ4jXpMYSL2xQ.jpeg);
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: scroll;
@@ -58,22 +74,7 @@
             -webkit-background-clip: text;
         }
 
-        .action {
-            background-color: #64a19d;
-            -webkit-box-shadow: 0 .1875rem .1875rem 0 rgba(0, 0, 0, .1) !important;
-            box-shadow: 0 .1875rem .1875rem 0 rgba(0, 0, 0, .1) !important;
-            padding: 1.25rem 2rem;
-            font-size: 80%;
-            text-transform: uppercase;
-            letter-spacing: .15rem;
-            border: 0;
-            color: #fff;
-        }
 
-        .action:hover {
-            background-color: #4f837f;
-            color: #fff;
-        }
 
         @media only screen and (min-width: 0px) and (max-width: 575px) {
             h1 {
@@ -134,34 +135,265 @@
 
             /* xl */
         }
+
+
+
+        /* New CSS */
+        .services {
+            background: #0c171c;
+            padding-bottom: 60px;
+            padding-top: 110px;
+        }
+
+        .section-title {
+            margin-bottom: 50px;
+        }
+
+        .section-title span {
+            color: #ffffff;
+            display: block;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .section-title h2 {
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 25px;
+        }
+
+        .section-title h2:after {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 5px;
+            width: 70px;
+            background: #64a19d;
+            content: "";
+        }
+
+        .services-title p {
+            margin-bottom: 45px;
+        }
+
+        .services-item {
+            margin-bottom: 45px;
+        }
+
+        .services-item-icon {
+            position: relative;
+            height: 70px;
+            width: 70px;
+            line-height: 70px;
+            text-align: center;
+        }
+
+        .services-item h4 {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 26px;
+            margin-bottom: 18px;
+        }
+
+        .services-item p {
+            margin-bottom: 0;
+        }
+
+        .services-item-icon:after {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #64a19d;
+            content: "";
+            -webkit-transition: all, 0.5s;
+            -o-transition: all, 0.5s;
+            transition: all, 0.5s;
+        }
+
+        .services-item-icon i {
+            vertical-align: middle;
+            color: #fff;
+        }
+
+        .actions .action .btn::before {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 30px;
+            width: 30px;
+            border-left: 2px solid #9b9b9b;
+            border-top: 2px solid #9b9b9b;
+            content: "";
+            z-index: -1;
+            -webkit-transition: all, 0.7s;
+            -o-transition: all, 0.7s;
+            transition: all, 0.7s;
+
+        }
+
+        .actions .action .btn::after {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            height: 30px;
+            width: 30px;
+            border-right: 2px solid #9b9b9b;
+            border-bottom: 2px solid #9b9b9b;
+            content: "";
+            z-index: -1;
+            -webkit-transition: all, 0.7s;
+            -o-transition: all, 0.7s;
+            transition: all, 0.7s;
+        }
+
+        .actions .action .btn {
+            display: inline-block;
+            font-size: 15px;
+            font-family: "Play", sans-serif;
+            font-weight: 700;
+            padding: 14px 32px 12px;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+            background-color: #00304559;
+            border-radius: 0px;
+        }
+
+        .actions .action .btn:hover {
+
+            background-color: #005f8859;
+
+        }
+
+        .header-link.header-btn {
+            background-color: #ffffff26;
+        }
     </style>
 
 </head>
 
 <body class="bg-decentralized">
 
-    <!-- <video autoplay loop muted playsinline class="bg-video">
-        <source src="images/7T9364v.mp4" type="video/mp4">
-    </video> -->
-    <section class="container" style="padding: 10rem 0;">
+
+    <header class="position-absolute w-100">
+        <div class="d-flex container justify-content-end p-4">
+            <div class="header-link p-3">
+                <a href="http://accionmaze.com" class="text-white">Accion Maze</a>
+            </div>
+            <div class="header-link pt-3">
+                |
+            </div>
+            <div class="header-link p-3">
+                <a href="http://accionmaze.io" class="text-white">Maze.io</a>
+            </div>
+            <div class="header-link header-btn">
+                <a href="http://accionmaze.io" class="text-white btn m-2">Download App</a>
+            </div>
+        </div>
+    </header>
+
+
+
+
+    <section class="container" style="padding: 10rem 0; min-height: 100vh;">
 
         <div class="row">
             <h1 class="col text-uppercase text-center p-sm-5">Decentralized<br />Mail</h1>
         </div>
         <div class="row">
-            <span class="desc p-5 p-lg-4 p-md-3 p-sm-2 p-xl-5 text-white">Decentralized Email is world's first
-                encrypted and decentralized
-                e-mail service. Nobody, except you, not even our engineers - can access your data. Take care of your
-                privacy
-                at the price of one pizza a month.</span>
+            <span class="desc p-5 p-lg-4 p-md-3 p-sm-2 p-xl-5 text-white">Dmail is one of it's kind peer to peer email
+                system built on Maze framework. Dmail offers end-to-end security, spam protection and data ownership
+                control.</span>
         </div>
 
-        <div class="row justify-content-center">
-            <a href="login" class="btn m-2 col-10 col-sm-4 action js-scroll-trigger">Login</a>
-            <a href="register" class="btn m-2 col-10 col-sm-4 action js-scroll-trigger">Register</a>
+        <div class="row justify-content-center actions">
+            <div class="action col-auto">
+                <a href="/demo/dmail/login" class="btn m-2 action js-scroll-trigger">
+                    Login
+                </a>
+            </div>
+
+            <div class="action col-auto">
+                <a href="/demo/dmail/register" class="btn m-2 action js-scroll-trigger">
+                    Register
+                </a>
+            </div>
         </div>
 
 
+
+    </section>
+
+    <section class="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="services-title">
+                        <div class="section-title">
+                            <!-- <span>Our services</span> -->
+                            <h2>About D-Mail</h2>
+                        </div>
+                        <p>Dmail is a peer to peer email system built on top of Maze framework, offering an
+                            alternative to the existing email system with better features and security.</p>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="services-item">
+                                <div class="services-item-icon">
+                                    <i class="fa fa-2x fa-user-friends" aria-hidden="true"></i>
+                                </div>
+                                <h4>Peer-2-Peer</h4>
+                                <p>Unlike other email systems, D-Mail is completely decentralized, hence there is no
+                                    central ownership</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="services-item">
+                                <div class="services-item-icon">
+                                    <i class="fa fa-2x fa-user-shield" aria-hidden="true"></i>
+                                </div>
+                                <h4>Security</h4>
+                                <p>D-Mail is end-to-end channel encrypted. Nobody, except you, not
+                                    even
+                                    our engineers - can access your data.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="services-item">
+                                <div class="services-item-icon">
+                                    <i class="fa fa-2x fa-server" aria-hidden="true"></i>
+                                </div>
+                                <h4>Offline First</h4>
+                                <p>Download our desktop application and use it without internet, once your're online
+                                    everything will be synced.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="services-item">
+                                <div class="services-item-icon">
+                                    <i class="fa fa-2x fa-shield-alt" aria-hidden="true"></i>
+                                </div>
+                                <h4>Spam Protection</h4>
+                                <p>D-Mail has built-in spam protection. You can send or receive emails only from
+                                    approved contacts. No more fake lottery emails!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>

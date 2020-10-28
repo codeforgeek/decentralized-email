@@ -57,9 +57,9 @@ app.get("/demo/dmail/mailbox", (req, res) => {
   res.sendFile("mailbox.html", { root: __dirname + "/views" });
 });
 
-app.get("/demo/dmail/dashboard", (req, res) => {
-  res.sendFile("dashboard.html", { root: __dirname + "/views" });
-});
+// app.get("/demo/dmail/dashboard", (req, res) => {
+//   res.sendFile("dashboard.html", { root: __dirname + "/views" });
+// });
 
 /**
  * Sign up, add new user
