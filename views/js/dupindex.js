@@ -906,7 +906,7 @@ const launchEmailSentModal = (status) => {
 const openMail = (mailId, mailTime, source = "inbox") => {
   $.ajax({
     type: "GET",
-    url: `../api/email/${source}/${mailId}`,
+    url: `./api/email/${source}/${mailId}`,
     success: function (data) {
       console.log("Read Mail Response:", data);
       renderMail(mailId, mailTime, data.data, source);
