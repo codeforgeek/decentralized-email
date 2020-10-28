@@ -12051,7 +12051,7 @@ a:focus {
 }
 
 .bg-decentralized-image {
-  background: url("../images/AjarJaggedClumber-size_restricted.gif");
+  background: url("./images/AjarJaggedClumber-size_restricted.gif");
   background-position: center;
   background-size: cover;
 }
