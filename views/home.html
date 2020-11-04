@@ -296,7 +296,7 @@
                 <a href="http://accionmaze.io" class="text-white">Maze.io</a>
             </div>
             <div class="header-link header-btn">
-                <a href="http://accionmaze.io" class="text-white btn m-2">Download App</a>
+                <a href="#" class="text-white btn m-2" id="download-release">Download App</a>
             </div>
         </div>
     </header>
@@ -407,6 +407,16 @@
     <!-- Custom scripts for all pages-->
     <script src="/js/sb-admin-2.min.js"></script>
     <script>if (window.module) module = window.module;</script>
+    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+            if (navigator.userAgent.indexOf("Linux") != -1) {
+                $("#download-release").attr("href", "https://github.com/accionlabs/Maze-Framework/releases/download/1.1.1/decentralized-email_1.0.0_amd64.deb");
+            } else {
+                $("#download-release").attr("href", "https://github.com/accionlabs/Maze-Framework/releases");
+            }
+        });
+    </script>
 </body>
 
 </html>
